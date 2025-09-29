@@ -1,0 +1,142 @@
+/* Reset */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: Arial, sans-serif; background: #fafafa; color: #333; }
+
+/* ---------- ENCABEZADO ---------- */
+.site-header {
+  background: linear-gradient(135deg, #00ff00, #00cc00); /* Verde con degradado */
+  color: white;
+  text-align: center;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.site-header h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.3); /* sombra ligera */
+  letter-spacing: 1px;
+}
+
+/* ---------- GALERÍA (página principal) ---------- */
+.gallery-wrap { 
+  padding: 1.5rem; 
+  max-width: 1000px; /* más estrecho para que se vean en filas de 2 */
+  margin: auto; 
+}
+
+.gallery {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(2, 1fr); /* siempre 2 columnas */
+}
+
+/* Tarjetas */
+.card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border-radius: 10px;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform .2s;
+}
+.card:hover { transform: scale(1.03); }
+
+/* Miniaturas más pequeñas y completas */
+.thumb {
+  width: 100%;
+  aspect-ratio: 3 / 4;  /* vertical, similar a un cartel */
+  overflow: hidden;
+  background: #eee;
+}
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;  /* muestra todo el cartel sin recortar */
+  background: #fff;     /* relleno blanco si sobra espacio */
+}
+
+.card-title {
+  padding: 0.6rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* ---------- PÁGINAS DE EVENTO (NO PRINCIPAL) ---------- */
+body:not(.index) {
+  background: #000;   /* Fondo negro */
+  color: #fff;        /* Texto blanco */
+}
+
+body:not(.index) a {
+  color: #00ff00;     /* Enlaces verdes */
+  font-weight: bold;
+  text-decoration: none;
+}
+body:not(.index) a:hover {
+  text-decoration: underline;
+}
+
+/* Contenedor de evento */
+.evento-contenedor {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.evento-imagen img {
+  width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.evento-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 1.1rem;
+  max-width: 300px;
+  margin-top: 1rem;
+}
+
+.info-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.icon {
+  font-size: 1.4rem;
+  width: 28px;
+  text-align: center;
+}
+
+footer.volver {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: 1fr; /* en móvil solo 1 columna */
+  }
+  .evento-contenedor {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .evento-info { max-width: none; align-items: center; }
+  .info-line { justify-content: center; }
+}
