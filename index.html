@@ -1,64 +1,224 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="ca">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Concentraciones 4x4</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Directori de trials 4x4 a Catalunya. Troba totes les competicions i proves de trial tot terreny a la teva zona. La web de referència per als amants del 4x4 a Catalunya." />
+  <meta name="keywords" content="4x4 Catalunya, trial 4x4, tot terreny Catalunya, trial off-road Catalunya, competició 4x4 Catalunya" />
+  <meta name="author" content="4x4 Catalunya" />
+  <meta property="og:title" content="4x4 Catalunya – Directori de Trials 4x4" />
+  <meta property="og:description" content="Tots els trials 4x4 a Catalunya en un sol lloc. La referència del tot terreny català." />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="ca_ES" />
+  <title>4x4 Catalunya – Directori de Trials 4x4 i Tot Terreny</title>
+  <link rel="canonical" href="https://www.4x4catalunya.cat/" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 <body>
+
+  <!-- HEADER -->
   <header class="site-header">
-    <h1>4X4 CAT</h1>
+    <div class="header-inner">
+      <a href="index.html" class="logo" aria-label="4x4 Catalunya – Inici">
+        <img src="assets/img/logo-4x4-catalunya-400.png" alt="4x4 Catalunya – Eventos y Aventura Off-Road" class="logo-img" width="56" height="56" />
+      </a>
+      <nav class="main-nav" aria-label="Navegació principal">
+        <a href="index.html" class="nav-link active">Trials</a>
+        <a href="#nosaltres" class="nav-link">Sobre nosaltres</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Obrir menú" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </header>
 
-  <main class="gallery-wrap">
-    <section class="gallery">
-      <a href="CORCA.html" class="card">
-        <div class="thumb">
-          <img src="Fotos/SENSE_ENTREBANCS.png" alt="Evento 4">
-        </div>
-        <div class="card-title">SENSE ENTREBANCS 4X4</div>
-      </a>
+  <main>
 
-      <a href="VALL_TERRI.html" class="card">
-        <div class="thumb">
-          <img src="Fotos/VALL_DE_TERRI.png" alt="Classics LA Vall DEL Terri">
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-bg" aria-hidden="true">
+        <div class="hero-track"></div>
+      </div>
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-eyebrow">Directori oficial</span>
+          <h1 id="hero-title">Trials 4×4<br/><em>a Catalunya</em></h1>
+          <p class="hero-desc">
+            La referència dels amants del tot terreny a Catalunya. Aquí trobaràs tots els 
+            <strong>trials 4x4 i competicions off-road</strong> que es celebren arreu del 
+            territori. Des de l'Alta Garrotxa fins al Delta de l'Ebre, no et perdis cap prova.
+          </p>
+          <a href="#events" class="btn btn-primary">Veure tots els trials</a>
         </div>
-        <div class="card-title">Classics LA Vall DEL Terri</div>
-      </a>
-
-      <a href="FORNELLS_4X4.html" class="card">
-        <div class="thumb">
-          <img src="Fotos/FORNELLS_4X4_18-19.png" alt="Fornells 4x4 cartel">
-        </div>
-        <div class="card-title">FORNELLS 4x4</div>
-      </a>
-
-      <a href="evento4.html" class="card">
-        <div class="thumb">
-          <img src="evento4.png" alt="Evento 4">
-        </div>
-        <div class="card-title">Evento 4</div>
-      </a>
-
-      <a href="evento5.html" class="card">
-        <div class="thumb">
-          <img src="evento5.png" alt="Evento 5">
-        </div>
-        <div class="card-title">Evento 5</div>
-      </a>
-
-      <a href="evento6.html" class="card">
-        <div class="thumb">
-          <img src="evento6.png" alt="Evento 6">
-        </div>
-        <div class="card-title">Evento 6</div>
-      </a>
+      </div>
     </section>
+
+    <!-- EVENTS GRID -->
+    <section class="events-section" id="events" aria-labelledby="events-title">
+      <div class="container">
+        <div class="section-header">
+          <h2 id="events-title">Trials 4×4 a Catalunya</h2>
+          <p>Propers primers · Events passats al final</p>
+        </div>
+
+        <!--
+          data-date = data d'inici de l'event en format YYYY-MM-DD
+          El JS ordena automàticament: futurs primer (del més proper al més llunyà),
+          passats al final (del més recent al més antic) i els marca com a "passat".
+        -->
+        <div class="events-grid" id="events-grid">
+
+          <article class="event-card" data-category="trial" data-date="2026-09-20">
+            <a href="eventos/sense-entrebancs-4x4.html" class="card-link" aria-label="Veure detalls de Sense Entrebancs 4x4">
+              <div class="card-img-wrap">
+                <img
+                  src="assets/img/sense-entrebancs-placeholder-cartell.png"
+                  alt="Cartell Sense Entrebancs 4x4 – Trial a Corçà, Girona"
+                  class="card-img" width="400" height="280" loading="lazy"
+                  onerror="this.src='assets/img/placeholder.svg'"
+                />
+                <span class="card-badge trial">Trial</span>
+              </div>
+              <div class="card-body">
+                <h3 class="card-title">Sense Entrebancs 4×4</h3>
+                <ul class="card-meta">
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    20–21 setembre 2025
+                  </li>
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Corçà, Girona
+                  </li>
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                    40€
+                  </li>
+                </ul>
+                <span class="btn btn-card">Veure més <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </a>
+          </article>
+
+          <article class="event-card" data-category="trial" data-date="2026-11-15">
+            <a href="eventos/trial-4x4-priorat.html" class="card-link" aria-label="Veure detalls del Trial 4x4 Priorat">
+              <div class="card-img-wrap">
+                <img
+                  src="assets/img/sense-entrebancs-placeholder-cartell.png"
+                  alt="Cartell Trial 4x4 Priorat"
+                  class="card-img" width="400" height="280" loading="lazy"
+                  onerror="this.src='assets/img/placeholder.svg'"
+                />
+                <span class="card-badge trial">Trial</span>
+              </div>
+              <div class="card-body">
+                <h3 class="card-title">Trial 4×4 Priorat</h3>
+                <ul class="card-meta">
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    15–16 novembre 2025
+                  </li>
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Gratallops, Tarragona
+                  </li>
+                  <li>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+                    45€
+                  </li>
+                </ul>
+                <span class="btn btn-card">Veure més <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>
+              </div>
+            </a>
+          </article>
+
+
+        </div><!-- /events-grid -->
+      </div>
+    </section>
+
+    <!-- INFO SECTION -->
+    <section class="info-section" id="nosaltres" aria-labelledby="info-title">
+      <div class="container">
+        <div class="info-grid">
+          <div class="info-text">
+            <span class="section-eyebrow">Sobre nosaltres</span>
+            <h2 id="info-title">La comunitat 4×4 de Catalunya</h2>
+            <p>
+              <strong>4x4 Catalunya</strong> és el directori de referència per als aficionats als vehicles 
+              tot terreny a Catalunya. Reunim tots els trials i competicions 4x4 
+              que es celebren al territori.
+            </p>
+            <p>
+              Ja siguis pilot experimentat o nou aficionat al món del 4x4, aquí trobaràs 
+              tota la informació actualitzada sobre els propers trials: dates, ubicacions, 
+              preus i contactes.
+            </p>
+            <ul class="info-list">
+              <li>✅ Informació actualitzada i verificada</li>
+              <li>✅ Cobertura de les 4 províncies catalanes</li>
+              <li>✅ Tots els nivells de dificultat</li>
+              <li>✅ Events per a famílies i veterans</li>
+            </ul>
+          </div>
+          <div class="info-visual" aria-hidden="true">
+            <div class="terrain-map">
+              <svg viewBox="0 0 340 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa estilitzat de Catalunya amb icons d'events 4x4">
+                <path d="M0 180 L40 120 L70 145 L110 80 L150 115 L185 60 L220 100 L255 75 L290 110 L340 90 L340 260 L0 260Z" fill="#1a1a1a" opacity="0.7"/>
+                <path d="M0 200 L30 160 L60 175 L95 130 L130 155 L165 100 L195 130 L230 115 L265 140 L300 125 L340 150 L340 260 L0 260Z" fill="#111" opacity="0.8"/>
+                <path d="M30 230 Q80 210 140 220 Q200 230 260 215 Q300 208 330 220" stroke="#E8650A" stroke-width="2.5" stroke-dasharray="8 4" opacity="0.8"/>
+                <circle cx="80" cy="205" r="6" fill="#E8650A"/><circle cx="80" cy="205" r="12" fill="#E8650A" opacity="0.2"/>
+                <circle cx="180" cy="195" r="6" fill="#E8650A"/><circle cx="180" cy="195" r="12" fill="#E8650A" opacity="0.2"/>
+                <circle cx="270" cy="210" r="6" fill="#E8650A"/><circle cx="270" cy="210" r="12" fill="#E8650A" opacity="0.2"/>
+                <circle cx="50" cy="30" r="1.5" fill="#E8650A" opacity="0.6"/>
+                <circle cx="120" cy="20" r="1" fill="#fff" opacity="0.4"/>
+                <circle cx="200" cy="35" r="1.5" fill="#fff" opacity="0.3"/>
+                <circle cx="290" cy="15" r="1" fill="#E8650A" opacity="0.5"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
-  <div class="cookie-fixed">
-    <p>Este sitio utiliza cookies para mejorar la experiencia. <a href="politica-cookies.html">Ver política de cookies</a></p>
-  </div>
+  <!-- FOOTER -->
+  <footer class="site-footer" aria-labelledby="footer-heading">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo" aria-label="4x4 Catalunya">
+            <span class="logo-text">4<span class="logo-x">×</span>4 <strong>Catalunya</strong></span>
+          </a>
+          <p>Web dedicada a trials i events 4x4 a Catalunya. Directori de proves off-road i tot terreny per als amants del 4x4.</p>
+        </div>
+        <nav class="footer-nav" aria-label="Navegació peu de pàgina">
+          <h3 id="footer-heading" class="footer-nav-title">Navegació</h3>
+          <ul>
+            <li><a href="index.html">Inici</a></li>
+            <li><a href="#events">Trials</a></li>
+            <li><a href="#nosaltres">Sobre nosaltres</a></li>
+          </ul>
+        </nav>
+        <div class="footer-categories">
+          <h3 class="footer-nav-title">Tipus de proves</h3>
+          <ul>
+            <li><a href="#events">Trials 4x4</a></li>
+            <li><a href="#events">Competicions Off-road</a></li>
+            <li><a href="#events">Proves per nivells</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 4x4 Catalunya · Web dedicada a trials i events 4x4 a Catalunya · Tots els drets reservats</p>
+        <p class="footer-seo-text">
+          Directori de trials 4x4 i competicions tot terreny a Catalunya. Girona, Barcelona, Tarragona i Lleida.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
