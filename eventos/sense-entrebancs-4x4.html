@@ -51,28 +51,44 @@
 </head>
 <body class="event-page">
 
-  <!-- HEADER -->
+  <!-- ============================================================
+       HEADER – Consistent en totes les pagines.
+       Logo clicable (porta a index.html), menu hamburguesa en mobil.
+       ============================================================ -->
   <header class="site-header">
     <div class="header-inner">
-      <a href="../index.html" class="logo" aria-label="4x4 Catalunya – Inici">
-        <span class="logo-icon">
-          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <rect x="2" y="2" width="32" height="32" rx="4" stroke="#E8650A" stroke-width="2"/>
-            <path d="M8 24L14 12L18 20L22 15L28 24" stroke="#E8650A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="8" cy="27" r="3" fill="#E8650A"/>
-            <circle cx="28" cy="27" r="3" fill="#E8650A"/>
-          </svg>
-        </span>
-        <span class="logo-text">4<span class="logo-x">×</span>4 <strong>Catalunya</strong></span>
+
+      <!-- Logo: imatge real + text al costat -->
+      <a href="../index.html" class="logo" aria-label="4x4 Catalunya - Inici">
+        <img
+          src="../assets/img/logo-4x4-catalunya-400.png"
+          alt="Logo 4x4 Catalunya"
+          class="logo-img"
+          width="44" height="44"
+        />
+        <span class="logo-text">4<span class="logo-x">x</span>4 <strong>Catalunya</strong></span>
       </a>
-      <nav class="main-nav" aria-label="Navegació principal">
-        <a href="../index.html" class="nav-link">Esdeveniments</a>
-        <a href="../index.html#proximament" class="nav-link">Pròximament</a>
+
+      <!-- Navegacio principal (en mobil es plega sota el boto hamburguesa) -->
+      <nav class="main-nav" id="main-nav" aria-label="Navegacio principal">
+        <a href="../index.html" class="nav-link">Trials</a>
         <a href="../index.html#nosaltres" class="nav-link">Sobre nosaltres</a>
+        <a href="../index.html#col-laborar" class="nav-link">Col.laborar</a>
       </nav>
-      <button class="nav-toggle" aria-label="Obrir menú" aria-expanded="false">
-        <span></span><span></span><span></span>
+
+      <!-- Boto hamburguesa - visible nomes en mobil (< 720px) via CSS -->
+      <button
+        class="nav-toggle"
+        id="nav-toggle"
+        aria-label="Obrir menu"
+        aria-expanded="false"
+        aria-controls="main-nav"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
+
     </div>
   </header>
 
