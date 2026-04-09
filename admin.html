@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - 4x4 Catalunya</title>
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    .admin-container { max-width: 600px; margin: 120px auto; padding: 30px; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; color: var(--orange); margin-bottom: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; text-transform: uppercase; }
+    .form-group input, .form-group textarea { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px; font-family: 'Barlow', sans-serif; }
+    .form-group input:focus { border-color: var(--orange); outline: none; }
+    #admin-panel { display: none; }
+    .status-msg { padding: 10px; border-radius: 5px; margin-top: 10px; display: none; }
+    .success { background: rgba(0, 255, 0, 0.1); color: #00ff00; border: 1px solid #00ff00; }
+    .error { background: rgba(255, 0, 0, 0.1); color: #ff4444; border: 1px solid #ff4444; }
+  </style>
+</head>
+<body>
+  <header class="site-header scrolled"><div class="container"><span class="logo-text">PANEL <strong>ADMIN</strong></span></div></header>
+
+  <main class="container">
+    <div id="login-section" class="admin-container">
+      <h2 style="color:var(--orange); margin-bottom:20px;">Accés Restringit</h2>
+      <div class="form-group"><input type="email" id="email" placeholder="Correu electrònic"></div>
+      <div class="form-group"><input type="password" id="password" placeholder="Contrasenya"></div>
+      <button id="login-btn" class="btn btn-primary" style="width:100%">Entrar</button>
+      <p id="login-error" class="status-msg error">Credencials incorrectes</p>
+    </div>
+
+    <div id="admin-panel" class="admin-container">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:30px;">
+        <h2 style="color:var(--orange); margin:0;">Nou Esdeveniment</h2>
+        <button id="logout-btn" class="btn" style="background:#333; font-size:12px;">Sortir</button>
+      </div>
+      
+      <div class="form-group"><label>Títol de l'event</label><input type="text" id="ev-title" placeholder="Ex: Trial 4x4 Corçà"></div>
+      <div class="form-group"><label>Data</label><input type="date" id="ev-date"></div>
+      <div class="form-group"><label>Ubicació</label><input type="text" id="ev-location" placeholder="Ex: Corçà, Girona"></div>
+      <div class="form-group"><label>Preu</label><input type="text" id="ev-price" placeholder="Ex: 40€"></div>
+      <div class="form-group"><label>Enllaç Inscripció / Info</label><input type="url" id="ev-link" placeholder="https://instagram.com/..."></div>
+      <div class="form-group"><label>Cartell (Imatge)</label><input type="file" id="ev-image" accept="image/*"></div>
+      
+      <button id="create-event-btn" class="btn btn-primary" style="width:100%">Publicar Esdeveniment</button>
+      <p id="upload-status" class="status-msg success">¡Event creat correctament!</p>
+    </div>
+  </main>
+
+  <script type="module" src="assets/js/admin.js"></script>
+</body>
+</html>
