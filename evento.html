@@ -5,20 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalls de l'esdeveniment - 4x4 Catalunya</title>
   <link rel="stylesheet" href="assets/css/styles.css">
+  <style>
+    /* Estilos específicos para que sea responsive */
+    .event-detail-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+      margin-top: 40px;
+    }
+
+    .event-image-container img {
+      width: 100%;
+      height: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border);
+      display: block;
+    }
+
+    .event-info h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    .event-meta-list {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 30px;
+    }
+
+    .event-meta-list li {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: #ccc;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .event-meta-list li strong { color: #fff; }
+
+    /* MEDIA QUERY PARA MÓVILES */
+    @media (max-width: 850px) {
+      .event-detail-wrapper {
+        grid-template-columns: 1fr; /* Una sola columna en móvil */
+        gap: 25px;
+      }
+      .event-info h1 {
+        text-align: center;
+      }
+      .event-meta-list li {
+        justify-content: center;
+      }
+      .detail-actions {
+        text-align: center;
+      }
+    }
+  </style>
 </head>
 <body>
   <header class="site-header scrolled">
     <div class="container">
-      <a href="index.html" class="logo-text">4x4 <strong>Catalunya</strong></a>
+      <a href="index.html" class="logo" style="text-decoration:none;">
+        <span class="logo-text">4<span class="logo-x">x</span>4 <strong>Catalunya</strong></span>
+      </a>
     </div>
   </header>
 
-  <main class="container" style="margin-top: 120px; min-height: 80vh;">
+  <main class="container" style="margin-top: 120px; padding-bottom: 60px;">
     <div id="event-detail-content">
-      <p style="color: white;">Carregant detalls...</p>
+      <p style="color: white; text-align: center;">Carregant detalls de l'esdeveniment...</p>
     </div>
-    <div style="margin-top: 40px;">
-      <a href="index.html" class="btn">← Tornar a l'inici</a>
+    
+    <div style="margin-top: 40px; text-align: center;">
+      <a href="index.html" class="btn btn-back">← Tornar a l'inici</a>
     </div>
   </main>
 
