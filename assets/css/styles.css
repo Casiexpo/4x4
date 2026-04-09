@@ -996,3 +996,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--orange); }
+
+
+.imaje {
+  background-image: url("/assets/img/hero-4x4.png");
+}
