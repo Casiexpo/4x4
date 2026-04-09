@@ -29,9 +29,6 @@ Aquesta web és un directori centralitzat que recull tots els esdeveniments 4x4 
 ## 📁 Estructura del Projecte
 
 ```text
-├──index.html
-├──evento.html
-├──admin.html
 ├── assets/
 │   ├── css/
 │   │   └── styles.css      # Estils globals i parches de tipografia
