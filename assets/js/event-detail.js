@@ -15,10 +15,7 @@ async function loadEventDetail() {
     const eventId = params.get('id');
     const container = document.getElementById('event-detail-content');
 
-    if (!eventId) {
-        container.innerHTML = "<p style='color:white;'>Error: No s'ha trobat l'ID de l'esdeveniment.</p>";
-        return;
-    }
+    if (!eventId) return;
 
     try {
         const docRef = doc(db, "events", eventId);
@@ -26,21 +23,34 @@ async function loadEventDetail() {
 
         if (docSnap.exists()) {
             const ev = docSnap.data();
+            
+            // Aquí inyectamos el HTML con el nuevo diseño Premium
             container.innerHTML = `
-                <div class="event-detail-wrapper">
-                    <div class="event-image-container">
-                        <img src="${ev.imageUrl}" alt="${ev.title}">
+                <div class="premium-wrapper">
+                    <div class="premium-image">
+                        <img src="${ev.imageUrl}" alt="Cartell ${ev.title}">
                     </div>
-                    <div class="event-info">
-                        <h1 class="orange-text">${ev.title}</h1>
-                        <ul class="event-meta-list">
-                            <li><span>📅</span> <strong>Data:</strong> ${ev.date}</li>
-                            <li><span>📍</span> <strong>Ubicació:</strong> ${ev.location}</li>
-                            <li><span>💶</span> <strong>Preu:</strong> ${ev.price}</li>
-                        </ul>
+                    <div class="premium-info">
+                        <h1 class="premium-title orange-text">${ev.title}</h1>
+                        
+                        <div class="info-boxes">
+                            <div class="info-box">
+                                <span class="icon">📅</span>
+                                <div><span class="label">Data</span><span class="value">${ev.date}</span></div>
+                            </div>
+                            <div class="info-box">
+                                <span class="icon">📍</span>
+                                <div><span class="label">Ubicació</span><span class="value">${ev.location}</span></div>
+                            </div>
+                            <div class="info-box">
+                                <span class="icon">💶</span>
+                                <div><span class="label">Preu</span><span class="value">${ev.price}</span></div>
+                            </div>
+                        </div>
+
                         <div class="detail-actions">
-                            <a href="${ev.link}" target="_blank" class="btn btn-primary" style="display:inline-block; width:100%; max-width:300px; text-align:center;">
-                                Inscriure's / Més info
+                            <a href="${ev.link}" target="_blank" class="btn btn-primary btn-premium">
+                                Informació i Inscripció
                             </a>
                         </div>
                     </div>
@@ -48,11 +58,11 @@ async function loadEventDetail() {
             `;
             document.title = `${ev.title} - 4x4 Catalunya`;
         } else {
-            container.innerHTML = "<p style='color:white;'>L'esdeveniment no existeix.</p>";
+            container.innerHTML = "<p style='color:white; text-align:center;'>L'esdeveniment no existeix o ha estat esborrat.</p>";
         }
     } catch (error) {
         console.error(error);
-        container.innerHTML = "<p style='color:white;'>Error al carregar les dades.</p>";
+        container.innerHTML = "<p style='color:red; text-align:center;'>Error al carregar les dades.</p>";
     }
 }
 
