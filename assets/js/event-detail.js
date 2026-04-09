@@ -27,19 +27,21 @@ async function loadEventDetail() {
         if (docSnap.exists()) {
             const ev = docSnap.data();
             container.innerHTML = `
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
-                    <div>
-                        <img src="${ev.imageUrl}" style="width: 100%; border-radius: 12px; border: 1px solid var(--border);">
+                <div class="event-detail-wrapper">
+                    <div class="event-image-container">
+                        <img src="${ev.imageUrl}" alt="${ev.title}">
                     </div>
-                    <div>
-                        <h1 style="color: var(--orange); font-size: 3rem; margin-bottom: 20px;">${ev.title}</h1>
-                        <ul style="list-style: none; padding: 0; font-size: 1.2rem; color: #ccc; line-height: 2;">
-                            <li><strong style="color:white;">📅 Data:</strong> ${ev.date}</li>
-                            <li><strong style="color:white;">📍 Ubicació:</strong> ${ev.location}</li>
-                            <li><strong style="color:white;">💶 Preu:</strong> ${ev.price}</li>
+                    <div class="event-info">
+                        <h1 class="orange-text">${ev.title}</h1>
+                        <ul class="event-meta-list">
+                            <li><span>📅</span> <strong>Data:</strong> ${ev.date}</li>
+                            <li><span>📍</span> <strong>Ubicació:</strong> ${ev.location}</li>
+                            <li><span>💶</span> <strong>Preu:</strong> ${ev.price}</li>
                         </ul>
-                        <div style="margin-top: 30px;">
-                            <a href="${ev.link}" target="_blank" class="btn btn-primary" style="display: inline-block;">Inscriure's ara</a>
+                        <div class="detail-actions">
+                            <a href="${ev.link}" target="_blank" class="btn btn-primary" style="display:inline-block; width:100%; max-width:300px; text-align:center;">
+                                Inscriure's / Més info
+                            </a>
                         </div>
                     </div>
                 </div>
