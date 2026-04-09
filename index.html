@@ -16,50 +16,26 @@
 </head>
 <body>
 
-  <!-- ============================================================
-       HEADER – Consistent en totes les pàgines.
-       Logo clicable (porta a index.html), menú hamburguesa en mòbil.
-       ============================================================ -->
   <header class="site-header">
     <div class="header-inner">
-
-      <!-- Logo: imatge real + text accessible al costat -->
       <a href="index.html" class="logo" aria-label="4x4 Catalunya – Inici">
-        <img
-          src="assets/img/logo-4x4-catalunya-400.png"
-          alt="Logo 4x4 Catalunya"
-          class="logo-img"
-          width="44" height="44"
-        />
+        <img src="assets/img/logo-4x4-catalunya-400.png" alt="Logo 4x4 Catalunya" class="logo-img" width="44" height="44" />
         <span class="logo-text">4<span class="logo-x">×</span>4 <strong>Catalunya</strong></span>
       </a>
 
-      <!-- Navegació principal (en mòbil es plega sota el botó hamburguesa) -->
       <nav class="main-nav" id="main-nav" aria-label="Navegació principal">
         <a href="index.html" class="nav-link active">Trials</a>
         <a href="#nosaltres" class="nav-link">Sobre nosaltres</a>
         <a href="#col-laborar" class="nav-link">Col·laborar</a>
       </nav>
 
-      <!-- Botó hamburguesa – visible només en mòbil (< 720px) via CSS -->
-      <button
-        class="nav-toggle"
-        id="nav-toggle"
-        aria-label="Obrir menú"
-        aria-expanded="false"
-        aria-controls="main-nav"
-      >
-        <span></span>
-        <span></span>
-        <span></span>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Obrir menú" aria-expanded="false" aria-controls="main-nav">
+        <span></span><span></span><span></span>
       </button>
-
     </div>
   </header>
 
   <main>
-
-    <!-- HERO -->
     <section class="hero imaje" aria-labelledby="hero-title">
       <div class="hero-bg" aria-hidden="true">
         <div class="hero-track"></div>
@@ -71,63 +47,44 @@
           <p class="hero-desc">
             La referència dels amants del tot terreny a Catalunya. Aquí trobaràs tots els
             <strong>trials 4x4 i competicions off-road</strong> que es celebren arreu del
-            territori. Des de l'Alta Garrotxa fins al Delta de l'Ebre, no et perdis cap prova.
+            territori.
           </p>
           <a href="#events" class="btn btn-primary">Veure tots els trials</a>
         </div>
       </div>
     </section>
 
-    <!-- EVENTS GRID
-         data-date = data d'inici (YYYY-MM-DD). El JS ordena automàticament:
-         futurs primer (del més pròxim al més llunyà), passats al final. -->
     <section id="events" class="events-section">
-  <div class="container">
-    <div class="section-header">
-      <h2 class="section-title">Pròxims <span class="orange-text">Esdeveniments</span></h2>
-    </div>
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Pròxims <span class="orange-text">Esdeveniments</span></h2>
+        </div>
+        <div class="events-grid" id="events-grid">
+          <p style="color: white; text-align: center; grid-column: 1/-1;">Carregant esdeveniments...</p>
+        </div>
+      </div>
+    </section>
 
-    <div class="events-grid" id="events-grid">
-      <p style="color: white; text-align: center; grid-column: 1/-1;">Carregant esdeveniments...</p>
-    </div>
-  </div>
-</section>
-
-<script type="module" src="assets/js/Main.js"></script>
-
-    <!-- SOBRE NOSALTRES -->
     <section class="info-section" id="nosaltres" aria-labelledby="info-title">
       <div class="container">
         <div class="info-grid">
           <div class="info-text">
             <span class="section-eyebrow">Sobre nosaltres</span>
             <h2 id="info-title">La comunitat 4x4 de Catalunya</h2>
-            <p>
-              <strong>4x4 Catalunya</strong> es el directori de referencia per als aficionats als vehicles
-              tot terreny a Catalunya. Reunim tots els trials i competicions 4x4
-              que es celebren al territori.
-            </p>
-            <p>
-              Ja siguis pilot experimentat o nou aficionat al mon del 4x4, aqui trobaras
-              tota la informacio actualitzada sobre els propers trials: dates, ubicacions,
-              preus i contactes.
-            </p>
+            <p><strong>4x4 Catalunya</strong> es el directori de referencia per als aficionats als vehicles tot terreny.</p>
             <ul class="info-list">
               <li>Informacio actualitzada i verificada</li>
               <li>Cobertura de les 4 provincies catalanes</li>
               <li>Tots els nivells de dificultat</li>
-              <li>Events per a families i veterans</li>
             </ul>
           </div>
           <div class="info-visual" aria-hidden="true">
             <div class="terrain-map">
-              <svg viewBox="0 0 340 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mapa estilitzat de Catalunya amb icons d'events 4x4">
+              <svg viewBox="0 0 340 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
                 <path d="M0 180 L40 120 L70 145 L110 80 L150 115 L185 60 L220 100 L255 75 L290 110 L340 90 L340 260 L0 260Z" fill="#1a1a1a" opacity="0.7"/>
                 <path d="M0 200 L30 160 L60 175 L95 130 L130 155 L165 100 L195 130 L230 115 L265 140 L300 125 L340 150 L340 260 L0 260Z" fill="#111" opacity="0.8"/>
                 <path d="M30 230 Q80 210 140 220 Q200 230 260 215 Q300 208 330 220" stroke="#E8650A" stroke-width="2.5" stroke-dasharray="8 4" opacity="0.8"/>
-                <circle cx="80" cy="205" r="6" fill="#E8650A"/><circle cx="80" cy="205" r="12" fill="#E8650A" opacity="0.2"/>
-                <circle cx="180" cy="195" r="6" fill="#E8650A"/><circle cx="180" cy="195" r="12" fill="#E8650A" opacity="0.2"/>
-                <circle cx="270" cy="210" r="6" fill="#E8650A"/><circle cx="270" cy="210" r="12" fill="#E8650A" opacity="0.2"/>
+                <circle cx="80" cy="205" r="6" fill="#E8650A"/><circle cx="180" cy="195" r="6" fill="#E8650A"/><circle cx="270" cy="210" r="6" fill="#E8650A"/>
               </svg>
             </div>
           </div>
@@ -135,75 +92,44 @@
       </div>
     </section>
 
-    <!-- ============================================================
-         SECCIO "VOLS COL.LABORAR?"
-         Nova seccio amb boto mailto taronja, consistent amb el disseny.
-         ============================================================ -->
     <section class="collab-section" id="col-laborar" aria-labelledby="collab-title">
       <div class="container">
         <div class="collab-inner">
           <span class="section-eyebrow">Contacte</span>
-          <h2 id="collab-title">Vols col·laborar?</h2>
-          <p class="collab-desc">
-            Organitzes un trial 4x4 a Catalunya i el vols veure publicat aqui?
-            Tens algun event que no apareix al directori? Posa't en contacte amb nosaltres
-            i t'afegim al calendari.
-          </p>
-          <!-- Boto mailto: obre el client de correu de l'usuari -->
-          <a
-            href="mailto:trials4x4catalunya@gmail.com"
-            class="btn btn-contact"
-            aria-label="Enviar correu a trials4x4catalunya@gmail.com"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-              <polyline points="22,6 12,13 2,6"/>
-            </svg>
+          <h2 id="collab-title">Vols <span class="l-geminada">col·laborar</span>?</h2>
+          <p class="collab-desc">Organitzes un trial 4x4 a Catalunya i el vols veure publicat aqui? Contacta amb nosaltres.</p>
+          <a href="mailto:trials4x4catalunya@gmail.com" class="btn btn-contact">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             trials4x4catalunya@gmail.com
           </a>
         </div>
       </div>
     </section>
-
   </main>
 
-  <!-- FOOTER -->
-  <footer class="site-footer" aria-labelledby="footer-heading">
+  <footer class="site-footer">
     <div class="container">
       <div class="footer-grid">
         <div class="footer-brand">
-          <a href="index.html" class="logo" aria-label="4x4 Catalunya">
-            <span class="logo-text">4<span class="logo-x">x</span>4 <strong>Catalunya</strong></span>
-          </a>
-          <p>Web dedicada a trials i events 4x4 a Catalunya. Directori de proves off-road i tot terreny per als amants del 4x4.</p>
+          <span class="logo-text">4<span class="logo-x">x</span>4 <strong>Catalunya</strong></span>
+          <p>Web dedicada a trials i events 4x4 a Catalunya.</p>
         </div>
-        <nav class="footer-nav" aria-label="Navegacio peu de pagina">
-          <h3 id="footer-heading" class="footer-nav-title">Navegacio</h3>
+        <nav class="footer-nav">
+          <h3 class="footer-nav-title">Navegacio</h3>
           <ul>
             <li><a href="index.html">Inici</a></li>
             <li><a href="#events">Trials</a></li>
-            <li><a href="#nosaltres">Sobre nosaltres</a></li>
-            <li><a href="#col-laborar">Col.laborar</a></li>
+            <li><a href="#col-laborar">Col·laborar</a></li>
           </ul>
         </nav>
-        <div class="footer-categories">
-          <h3 class="footer-nav-title">Tipus de proves</h3>
-          <ul>
-            <li><a href="#events">Trials 4x4</a></li>
-            <li><a href="#events">Competicions Off-road</a></li>
-            <li><a href="#events">Proves per nivells</a></li>
-          </ul>
-        </div>
       </div>
       <div class="footer-bottom">
-        <p>2025 4x4 Catalunya - Web dedicada a trials i events 4x4 a Catalunya - Tots els drets reservats</p>
-        <p class="footer-seo-text">
-          Directori de trials 4x4 i competicions tot terreny a Catalunya. Girona, Barcelona, Tarragona i Lleida.
-        </p>
+        <p>2025 4x4 Catalunya - Tots els drets reservats</p>
       </div>
     </div>
   </footer>
 
+  <script type="module" src="assets/js/Main.js"></script>
   <script src="assets/js/main.js"></script>
 </body>
 </html>
