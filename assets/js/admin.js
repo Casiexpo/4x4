@@ -16,17 +16,88 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+// =========================================================
+// SISTEMA DE NOTIFICACIONES CUSTOM (TOASTS Y MODAL)
+// =========================================================
+
+// 1. Inyectamos los estilos CSS dinámicamente
+const style = document.createElement('style');
+style.textContent = `
+    #custom-toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+    .custom-toast { background: var(--bg-card, #1a1a1a); color: #fff; padding: 16px 24px; border-radius: 8px; border-left: 4px solid var(--orange, #E8650A); box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Barlow', sans-serif; font-size: 1.1rem; display: flex; align-items: center; gap: 12px; transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .custom-toast.show { transform: translateX(0); }
+    .custom-toast.error { border-left-color: #ff3333; }
+    
+    #custom-confirm-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(4px); }
+    #custom-confirm-modal.show { opacity: 1; pointer-events: auto; }
+    .confirm-box { background: var(--bg-card, #1a1a1a); padding: 40px; border-radius: 16px; border: 1px solid var(--border, #2a2a2a); text-align: center; max-width: 400px; width: 90%; transform: translateY(-30px); transition: transform 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    #custom-confirm-modal.show .confirm-box { transform: translateY(0); }
+    .confirm-btns { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
+`;
+document.head.appendChild(style);
+
+// 2. Creamos el contenedor de las notificaciones flotantes
+const toastContainer = document.createElement('div');
+toastContainer.id = 'custom-toast-container';
+document.body.appendChild(toastContainer);
+
+function showToast(msg, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `custom-toast ${type}`;
+    toast.innerHTML = `<span style="font-size:1.4rem;">${type === 'error' ? '❌' : '✅'}</span> <span>${msg}</span>`;
+    toastContainer.appendChild(toast);
+    setTimeout(() => toast.classList.add('show'), 10);
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400); // Espera a que termine la animación para borrarlo
+    }, 3500); // La notificación dura 3.5 segundos
+}
+
+// 3. Creamos el Modal de confirmación para borrar
+const confirmModal = document.createElement('div');
+confirmModal.id = 'custom-confirm-modal';
+confirmModal.innerHTML = `
+    <div class="confirm-box">
+        <h2 style="color:var(--orange, #E8650A); margin-bottom:15px; font-family:'Barlow Condensed', sans-serif; text-transform:uppercase;">⚠️ Atenció</h2>
+        <p id="confirm-msg" style="color:#ddd; font-size:1.1rem; line-height:1.5;"></p>
+        <div class="confirm-btns">
+            <button id="confirm-cancel" class="btn" style="background:#333; padding:12px 25px;">Cancel·lar</button>
+            <button id="confirm-ok" class="btn" style="background:#ff3333; color:white; padding:12px 25px;">Sí, eliminar</button>
+        </div>
+    </div>
+`;
+document.body.appendChild(confirmModal);
+
+function customConfirm(msg) {
+    return new Promise((resolve) => {
+        document.getElementById('confirm-msg').textContent = msg;
+        confirmModal.classList.add('show');
+        
+        document.getElementById('confirm-cancel').onclick = () => {
+            confirmModal.classList.remove('show');
+            resolve(false);
+        };
+        document.getElementById('confirm-ok').onclick = () => {
+            confirmModal.classList.remove('show');
+            resolve(true);
+        };
+    });
+}
+
+// =========================================================
+// LÓGICA PRINCIPAL (LOGIN, SUBIR, BORRAR)
+// =========================================================
+
 const loginSec = document.getElementById('login-section');
 const adminSec = document.getElementById('admin-panel');
 const listSec = document.getElementById('admin-list-section');
 
-// 1. CONTROL DE SESIÓN
 onAuthStateChanged(auth, (user) => {
     if (user) { 
         loginSec.style.display = 'none'; 
         adminSec.style.display = 'block';
-        listSec.style.display = 'block'; // Mostramos la lista
-        loadAdminEvents(); // Cargamos los eventos
+        listSec.style.display = 'block'; 
+        loadAdminEvents(); 
     } else { 
         loginSec.style.display = 'block'; 
         adminSec.style.display = 'none';
@@ -34,15 +105,17 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// 2. LOGIN Y LOGOUT
 document.getElementById('login-btn').addEventListener('click', () => {
     const email = document.getElementById('email').value;
     const pass = document.getElementById('password').value;
-    signInWithEmailAndPassword(auth, email, pass).catch(() => document.getElementById('login-error').style.display = 'block');
+    signInWithEmailAndPassword(auth, email, pass).catch(() => {
+        document.getElementById('login-error').style.display = 'block';
+        showToast("Credencials incorrectes", "error");
+    });
 });
+
 document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
-// 3. CONVERTIR FOTO
 const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -50,12 +123,20 @@ const toBase64 = file => new Promise((resolve, reject) => {
     reader.onerror = error => reject(error);
 });
 
-// 4. CREAR EVENTO
 document.getElementById('create-event-btn').addEventListener('click', async (e) => {
     const btn = e.target;
     const file = document.getElementById('ev-image').files[0];
-    if (!file) { alert("Sube una imagen"); return; }
-    btn.disabled = true; btn.textContent = "Guardant...";
+    
+    if (!file) { 
+        showToast("Si us plau, puja el cartell de l'esdeveniment", "error"); 
+        return; 
+    }
+    if (!document.getElementById('ev-title').value) {
+        showToast("Has d'escriure un títol", "error"); 
+        return; 
+    }
+
+    btn.disabled = true; btn.textContent = "Guardant dades...";
 
     try {
         const base64Img = await toBase64(file);
@@ -68,14 +149,19 @@ document.getElementById('create-event-btn').addEventListener('click', async (e) 
             imageUrl: base64Img,
             timestamp: new Date().getTime()
         });
-        alert("¡Creat correctament!");
-        window.location.reload();
+        
+        showToast("Esdeveniment publicat amb èxit!"); // Notificación guapa
+        
+        // Esperamos 2 segundos para que el usuario lea la notificación antes de recargar
+        setTimeout(() => window.location.reload(), 2000); 
     } catch (err) {
-        console.error(err); alert("Error"); btn.disabled = false;
+        console.error(err); 
+        showToast("Error de connexió al guardar", "error");
+        btn.disabled = false;
+        btn.textContent = "Publicar Esdeveniment";
     }
 });
 
-// 5. CARGAR LISTA PARA BORRAR
 async function loadAdminEvents() {
     const container = document.getElementById('events-list-admin');
     try {
@@ -83,7 +169,7 @@ async function loadAdminEvents() {
         const snap = await getDocs(q);
         
         if (snap.empty) {
-            container.innerHTML = "<p style='color:white;'>No hi ha esdeveniments creats.</p>";
+            container.innerHTML = "<p style='color:#888; text-align:center; padding:20px;'>Encara no hi ha esdeveniments.</p>";
             return;
         }
 
@@ -91,46 +177,49 @@ async function loadAdminEvents() {
         snap.forEach(docSnap => {
             const ev = docSnap.data();
             const div = document.createElement('div');
-            div.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:15px; background:#222; margin-bottom:10px; border-radius:8px; border:1px solid #333;";
+            div.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--bg, #0d0d0d); margin-bottom:10px; border-radius:8px; border:1px solid var(--border, #2a2a2a); transition: border-color 0.3s;";
             div.innerHTML = `
                 <div>
-                    <strong style="color:var(--orange); display:block;">${ev.title}</strong>
-                    <span style="color:#888; font-size:14px;">📅 ${ev.date} | 📍 ${ev.location}</span>
+                    <strong style="color:var(--orange); display:block; font-size:1.1rem; margin-bottom:5px;">${ev.title}</strong>
+                    <span style="color:#aaa; font-size:0.9rem;">📅 ${ev.date} &nbsp;|&nbsp; 📍 ${ev.location}</span>
                 </div>
-                <button class="btn delete-btn" data-id="${docSnap.id}" style="background:#ff3333; color:white; padding:8px 15px; font-size:12px;">Eliminar</button>
+                <button class="btn delete-btn" data-id="${docSnap.id}" style="background:#ff3333; color:white; padding:8px 15px; font-size:0.9rem; border-radius:6px; flex-shrink:0; margin-left:15px;">Eliminar</button>
             `;
             container.appendChild(div);
         });
 
-        // Añadir el evento de click a todos los botones de borrar
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', deleteEvent);
         });
 
     } catch (e) {
         console.error(e);
-        container.innerHTML = "<p style='color:red;'>Error al carregar la llista.</p>";
+        container.innerHTML = "<p style='color:#ff3333;'>Error al carregar la llista.</p>";
     }
 }
 
-// 6. FUNCIÓN DE BORRAR
 async function deleteEvent(e) {
     const eventId = e.target.getAttribute('data-id');
+    const title = e.target.parentElement.querySelector('strong').textContent;
     
-    // Ventana de confirmación de seguridad
-    if (confirm("Segur que vols esborrar aquest esdeveniment per sempre?")) {
+    // Aquí llamamos a la ventana de confirmación guapa en vez de la fea del navegador
+    const isConfirmed = await customConfirm(`Estàs a punt d'esborrar permanentment el trial:<br><strong style="color:white; display:block; margin-top:10px;">${title}</strong><br>Aquesta acció no es pot desfer.`);
+    
+    if (isConfirmed) {
         e.target.textContent = "Esborrant...";
         e.target.disabled = true;
+        e.target.style.opacity = '0.5';
         
         try {
-            // Comando mágico de Firebase para borrar
             await deleteDoc(doc(db, "events", eventId));
-            loadAdminEvents(); // Recargamos la lista
+            showToast("Esdeveniment eliminat correctament!"); // Notificación verde
+            loadAdminEvents(); 
         } catch (error) {
             console.error(error);
-            alert("Error al esborrar");
+            showToast("No s'ha pogut esborrar", "error"); // Notificación roja
             e.target.textContent = "Eliminar";
             e.target.disabled = false;
+            e.target.style.opacity = '1';
         }
     }
 }
