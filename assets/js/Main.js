@@ -28,7 +28,7 @@ async function loadEvents() {
             const card = document.createElement('article');
             card.className = 'event-card';
             card.innerHTML = `
-                <a href="${ev.link}" target="_blank" class="card-link">
+                <a href="evento.html?id=${doc.id}" class="card-link">
                     <div class="card-img-wrap">
                         <img src="${ev.imageUrl}" class="card-img">
                         <span class="card-badge trial">Trial</span>
