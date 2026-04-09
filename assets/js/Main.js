@@ -1,192 +1,92 @@
-/* ============================================================
-   4x4 CATALUNYA – MAIN.JS
-   ============================================================ */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
-'use strict';
+const firebaseConfig = {
+    apiKey: "AIzaSyDly5eTPk_a1c1gtXQO4YI72V9Naqjz40o",
+    authDomain: "x4-catalunya.firebaseapp.com",
+    projectId: "x4-catalunya",
+    storageBucket: "x4-catalunya.firebasestorage.app",
+    messagingSenderId: "462617699135",
+    appId: "1:462617699135:web:51d11630a82ad03cf0698a",
+    measurementId: "G-ZXK7YPPXP5"
+};
 
-/* ---- HEADER: scroll border effect -------------------------- */
-(function () {
-  const header = document.querySelector('.site-header');
-  if (!header) return;
-  window.addEventListener('scroll', () => {
-    header.classList.toggle('scrolled', window.scrollY > 40);
-  }, { passive: true });
-})();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-/* ---- MOBILE NAV TOGGLE ------------------------------------- */
-(function () {
-  const toggle = document.querySelector('.nav-toggle');
-  const nav    = document.querySelector('.main-nav');
-  if (!toggle || !nav) return;
+// CARGAR EVENTOS DESDE FIREBASE
+async function loadEvents() {
+    const grid = document.getElementById('events-grid');
+    if (!grid) return;
 
-  toggle.addEventListener('click', () => {
-    const isOpen = nav.classList.toggle('open');
-    toggle.setAttribute('aria-expanded', isOpen);
-  });
+    try {
+        const q = query(collection(db, "events"), orderBy("date", "asc"));
+        const querySnapshot = await getDocs(q);
+        grid.innerHTML = '';
 
-  nav.querySelectorAll('.nav-link').forEach(link => {
-    link.addEventListener('click', () => {
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    });
-  });
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-  document.addEventListener('click', (e) => {
-    if (!nav.contains(e.target) && !toggle.contains(e.target)) {
-      nav.classList.remove('open');
-      toggle.setAttribute('aria-expanded', 'false');
-    }
-  });
-})();
-
-/* ---- COUNTER ANIMATION ------------------------------------- */
-(function () {
-  const counters = document.querySelectorAll('.stat-num[data-count]');
-  if (!counters.length) return;
-
-  const easeOut = (t) => 1 - Math.pow(1 - t, 3);
-
-  const animateCounter = (el) => {
-    const target   = parseInt(el.getAttribute('data-count'), 10);
-    const duration = 1400;
-    let start      = null;
-
-    const step = (timestamp) => {
-      if (!start) start = timestamp;
-      const elapsed  = timestamp - start;
-      const progress = Math.min(elapsed / duration, 1);
-      const value    = Math.round(easeOut(progress) * target);
-      el.textContent = target >= 1000 ? value.toLocaleString('ca-ES') : value;
-      if (progress < 1) requestAnimationFrame(step);
-    };
-
-    requestAnimationFrame(step);
-  };
-
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounter(entry.target);
-          observer.unobserve(entry.target);
+        if (querySnapshot.empty) {
+            grid.innerHTML = '<p style="color:white; grid-column:1/-1; text-align:center;">No hi ha esdeveniments programats.</p>';
+            return;
         }
-      });
-    }, { threshold: 0.5 });
-    counters.forEach(c => observer.observe(c));
-  } else {
-    counters.forEach(animateCounter);
-  }
-})();
 
-/* ---- DATE SORTING ------------------------------------------ */
-/*
-  Llegeix l'atribut data-date (YYYY-MM-DD) de cada .event-card i:
-  1. Compara amb la data d'avui
-  2. Events futurs o d'avui → primera posició, ordenats del més pròxim al més llunyà
-  3. Events passats → al final, ordenats del més recent al més antic
-  4. Afegeix badge "Passat" i estil atenuat als events ja celebrats
-*/
-(function () {
-  const grid = document.getElementById('events-grid');
-  if (!grid) return;
+        querySnapshot.forEach((doc) => {
+            const ev = doc.data();
+            const eventDate = new Date(ev.date + 'T00:00:00');
+            const isPast = eventDate < today;
 
-  const cards = Array.from(grid.querySelectorAll('.event-card[data-date]'));
-  if (!cards.length) return;
+            const card = document.createElement('article');
+            card.className = 'event-card';
+            if (isPast) card.style.opacity = '0.5';
 
-  // Normalize today to midnight for clean comparison
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+            card.innerHTML = `
+                <a href="${ev.link}" target="_blank" class="card-link">
+                    <div class="card-img-wrap">
+                        <img src="${ev.imageUrl}" alt="${ev.title}" class="card-img" loading="lazy">
+                        <span class="card-badge trial">Trial</span>
+                        ${isPast ? '<span class="card-badge-past" style="background:red; position:absolute; top:10px; right:10px; padding:2px 8px; border-radius:4px; font-size:12px;">Passat</span>' : ''}
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${ev.title}</h3>
+                        <ul class="card-meta">
+                            <li><span>📅</span> ${ev.date}</li>
+                            <li><span>📍</span> ${ev.location}</li>
+                            <li><span>💶</span> ${ev.price}</li>
+                        </ul>
+                        <span class="btn btn-card">Més info</span>
+                    </div>
+                </a>
+            `;
+            grid.appendChild(card);
+            
+            // Aplicar efecto de inclinación (Tilt) que tenías
+            applyTiltEffect(card);
+        });
 
-  const upcoming = [];
-  const past     = [];
-
-  cards.forEach(card => {
-    const dateStr = card.getAttribute('data-date'); // YYYY-MM-DD
-    const eventDate = new Date(dateStr + 'T00:00:00');
-
-    if (eventDate >= today) {
-      upcoming.push({ card, date: eventDate });
-    } else {
-      past.push({ card, date: eventDate });
-      markAsPast(card);
+    } catch (error) {
+        console.error("Error:", error);
+        grid.innerHTML = '<p style="color:white;">Error al carregar dades.</p>';
     }
-  });
-
-  // Sort upcoming: soonest first
-  upcoming.sort((a, b) => a.date - b.date);
-
-  // Sort past: most recent first
-  past.sort((a, b) => b.date - a.date);
-
-  // Reorder DOM
-  const ordered = [...upcoming, ...past];
-  ordered.forEach(({ card }) => grid.appendChild(card));
-})();
-
-function markAsPast(card) {
-  // Visual style: desaturated + opacity
-  card.style.opacity = '0.55';
-  card.style.filter  = 'grayscale(60%)';
-
-  // Add "Passat" badge to the image wrap
-  const imgWrap = card.querySelector('.card-img-wrap');
-  if (imgWrap && !imgWrap.querySelector('.card-badge-past')) {
-    const badge = document.createElement('span');
-    badge.className   = 'card-badge-past';
-    badge.textContent = 'Passat';
-    badge.setAttribute('aria-label', 'Event ja celebrat');
-    imgWrap.appendChild(badge);
-  }
-
-  // Add aria note
-  const link = card.querySelector('.card-link');
-  if (link) {
-    const currentLabel = link.getAttribute('aria-label') || '';
-    if (!currentLabel.includes('(passat)')) {
-      link.setAttribute('aria-label', currentLabel + ' (event ja celebrat)');
-    }
-  }
 }
 
-/* ---- CARD HOVER: subtle tilt effect ----------------------- */
-(function () {
-  if (window.matchMedia('(hover: none)').matches) return;
-
-  const cards = document.querySelectorAll('.event-card');
-  cards.forEach(card => {
+// MANTENER TUS EFECTOS ORIGINALES
+function applyTiltEffect(card) {
     card.addEventListener('mousemove', (e) => {
-      const rect  = card.getBoundingClientRect();
-      const x     = (e.clientX - rect.left) / rect.width  - 0.5;
-      const y     = (e.clientY - rect.top)  / rect.height - 0.5;
-      const tiltX = (-y * 6).toFixed(2);
-      const tiltY = ( x * 6).toFixed(2);
-      card.style.transform = `translateY(-6px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+        const rect = card.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+        card.style.transform = `translateY(-6px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
     });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-    });
-  });
-})();
+    card.addEventListener('mouseleave', () => card.style.transform = '');
+}
 
-/* ---- SCROLL REVEAL ----------------------------------------- */
-(function () {
-  if (!('IntersectionObserver' in window)) return;
+// EFECTO HEADER SCROLL
+window.addEventListener('scroll', () => {
+    const header = document.querySelector('.site-header');
+    if (header) header.classList.toggle('scrolled', window.scrollY > 40);
+});
 
-  const revealEls = document.querySelectorAll('.info-grid, .info-text, .info-visual');
-  const observer  = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity   = '1';
-        entry.target.style.transform = 'translateY(0)';
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-
-  revealEls.forEach(el => {
-    el.style.opacity    = '0';
-    el.style.transform  = 'translateY(30px)';
-    el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(el);
-  });
-})();
+// INICIAR CARGA
+document.addEventListener('DOMContentLoaded', loadEvents);
