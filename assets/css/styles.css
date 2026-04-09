@@ -999,5 +999,5 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 
 .imaje {
-  background-image: url("./assets/img/hero-4x4.png");
+  background-image: url("/4x4/assets/img/hero-4x4.png");
 }
