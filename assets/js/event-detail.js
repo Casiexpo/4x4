@@ -23,12 +23,8 @@ async function loadEventDetail() {
 
         if (docSnap.exists()) {
             const ev = docSnap.data();
-            
-            // Lógica para el badge dinámico (TRIAL, CURSO, etc.)
-            // Si el campo no existe en Firebase, usamos 'trial' por defecto
             const tipoEvento = ev.tipo_evento || 'trial';
 
-            // Inyectamos el HTML con el badge dinámico incluido
             container.innerHTML = `
                 <div class="premium-wrapper">
                     <div class="premium-image">
@@ -39,7 +35,6 @@ async function loadEventDetail() {
                     </div>
                     <div class="premium-info">
                         <h1 class="premium-title orange-text">${ev.title}</h1>
-                        
                         <div class="info-boxes">
                             <div class="info-box">
                                 <span class="icon">📅</span>
@@ -54,7 +49,6 @@ async function loadEventDetail() {
                                 <div><span class="label">Preu</span><span class="value">${ev.price}</span></div>
                             </div>
                         </div>
-
                         <div class="detail-actions">
                             <a href="${ev.link}" target="_blank" class="btn btn-primary btn-premium">
                                 Informació i Inscripció
