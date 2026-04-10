@@ -948,9 +948,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     min-width: 70px;
 }
 
-.card-badge.trial { background: #E8650A !important; } /* Naranja */
-.card-badge.curso { background: #A855F7 !important; } /* Morado */
-.card-badge.otros { background: #64748B !important; } /* Gris */
+.card-badge.trial  { background: #E8650A !important; color: #fff; } /* Taronja */
+.card-badge.curs   { background: #A855F7 !important; color: #fff; } /* Morat */
+.card-badge.altres { background: #64748B !important; color: #fff; } /* Gris */
 
 
 /* ============================================================
