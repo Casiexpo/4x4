@@ -37,6 +37,7 @@ Aquesta web és un directori centralitzat que recull tots els esdeveniments 4x4 
 │   │   ├── admin.js        # Lògica del panell d'administració
 │   │   └── event-detail.js # Generació dinàmica de fitxes d'esdeveniment
 │   └── img/                # Logos i recursos visuals
+│       └── carrusel/       # Fotos del carrusel en la zona "Sobre nosaltres"
 ├── admin.html              # Gestor d'esdeveniments
 ├── evento.html             # Plantilla dinàmica de detall
 └── index.html              # Pàgina principal (Home)

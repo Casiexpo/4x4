@@ -80,16 +80,15 @@
             </ul>
           </div>
           <div class="info-visual" aria-hidden="true">
-            <div class="terrain-map">
-              <svg viewBox="0 0 340 260" fill="none" xmlns="http://www.w3.org/2000/svg" role="img">
-                <path d="M0 180 L40 120 L70 145 L110 80 L150 115 L185 60 L220 100 L255 75 L290 110 L340 90 L340 260 L0 260Z" fill="#1a1a1a" opacity="0.7"/>
-                <path d="M0 200 L30 160 L60 175 L95 130 L130 155 L165 100 L195 130 L230 115 L265 140 L300 125 L340 150 L340 260 L0 260Z" fill="#111" opacity="0.8"/>
-                <path d="M30 230 Q80 210 140 220 Q200 230 260 215 Q300 208 330 220" stroke="#E8650A" stroke-width="2.5" stroke-dasharray="8 4" opacity="0.8"/>
-                <circle cx="80" cy="205" r="6" fill="#E8650A"/><circle cx="180" cy="195" r="6" fill="#E8650A"/><circle cx="270" cy="210" r="6" fill="#E8650A"/>
-              </svg>
+            <div class="carrusel-wrapper">
+              <div class="carrusel-track" id="carrusel-track">
+                </div>
+              <button class="carrusel-btn prev" id="carrusel-prev" aria-label="Anterior">&#10094;</button>
+              <button class="carrusel-btn next" id="carrusel-next" aria-label="Següent">&#10095;</button>
+              <div class="carrusel-dots" id="carrusel-dots"></div>
             </div>
           </div>
-        </div>
+          </div>
       </div>
     </section>
 
@@ -132,5 +131,6 @@
 
   <script type="module" src="assets/js/Main.js"></script>
   <script src="assets/js/main.js"></script>
+  <script src="assets/js/carrusel.js"></script>
 </body>
 </html>
