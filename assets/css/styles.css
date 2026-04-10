@@ -258,7 +258,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   En desktop queda ocult (display: none).
 */
 .nav-toggle {
-  display: none;            /* ocult per defecte (desktop) */
+  display: none;             /* ocult per defecte (desktop) */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -668,15 +668,85 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 .info-visual { position: relative; }
-.terrain-map {
+
+/* ---- CARRUSEL ---- */
+.carrusel-wrapper {
+  position: relative;
   background: var(--bg-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  padding: 24px;
   aspect-ratio: 4/3;
   overflow: hidden;
+  box-shadow: var(--shadow-card);
 }
-.terrain-map svg { width: 100%; height: 100%; }
+.carrusel-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s ease-in-out;
+}
+.carrusel-slide {
+  min-width: 100%;
+  height: 100%;
+}
+.carrusel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Asegura que la foto llene el espacio sin deformarse */
+  display: block;
+}
+
+/* Controles del carrusel */
+.carrusel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(13, 13, 13, 0.6);
+  color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  transition: all var(--transition);
+  z-index: 2;
+}
+.carrusel-btn:hover {
+  background: var(--orange);
+  transform: translateY(-50%) scale(1.1);
+}
+.carrusel-btn.prev { left: 16px; }
+.carrusel-btn.next { right: 16px; }
+
+/* Puntos de navegación */
+.carrusel-dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+.carrusel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.carrusel-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+.carrusel-dot.active {
+  background: var(--orange);
+  transform: scale(1.2);
+}
 
 /* ============================================================
    SECCIO "VOLS COL.LABORAR?" – Nova seccio de contacte
@@ -978,26 +1048,4 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .event-card:nth-child(5) { animation-delay: 0.25s; }
 .event-card:nth-child(6) { animation-delay: 0.30s; }
 
-/* ============================================================
-   RESPONSIVE – General
-   ============================================================ */
-@media (max-width: 600px) {
-  .events-section { padding: 56px 0; }
-  .info-section   { padding: 56px 0; }
-  .events-grid    { grid-template-columns: 1fr; }
-  .filter-bar     { justify-content: center; }
-  .event-hero-badge { top: 16px; left: 16px; }
-}
-
-/* ============================================================
-   SCROLLBAR
-   ============================================================ */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--orange); }
-
-
-.imaje {
-  background-image: url("/4x4/assets/img/hero-4x4.png");
-}
+/* =========================== */
