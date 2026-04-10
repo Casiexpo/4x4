@@ -1049,3 +1049,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .event-card:nth-child(6) { animation-delay: 0.30s; }
 
 /* =========================== */
+
+imaje{
+  background-image: url("/4x4/assets/img/hero-4x4.png");
+}
