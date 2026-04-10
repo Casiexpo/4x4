@@ -53,3 +53,57 @@ async function loadEvents() {
 }
 
 document.addEventListener('DOMContentLoaded', loadEvents);
+
+// =========================================================
+// MENÚ HAMBURGER (mòbil)
+// =========================================================
+(function() {
+    const toggle   = document.getElementById('nav-toggle');
+    const nav      = document.getElementById('main-nav');
+    const header   = document.querySelector('.site-header');
+
+    if (!toggle || !nav) return;
+
+    // Creem l'overlay dinàmicament
+    const overlay = document.createElement('div');
+    overlay.className = 'nav-overlay';
+    document.body.appendChild(overlay);
+
+    function openMenu() {
+        nav.classList.add('open');
+        overlay.classList.add('show');
+        toggle.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden'; // evita scroll mentre el menú és obert
+    }
+
+    function closeMenu() {
+        nav.classList.remove('open');
+        overlay.classList.remove('show');
+        toggle.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    }
+
+    toggle.addEventListener('click', () => {
+        nav.classList.contains('open') ? closeMenu() : openMenu();
+    });
+
+    // Tancar al clicar l'overlay
+    overlay.addEventListener('click', closeMenu);
+
+    // Tancar al clicar qualsevol enllaç del menú
+    nav.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', closeMenu);
+    });
+
+    // Tancar amb Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+    });
+
+    // Afegir classe "scrolled" al header quan es fa scroll
+    const scrollHandler = () => {
+        header?.classList.toggle('scrolled', window.scrollY > 10);
+    };
+    window.addEventListener('scroll', scrollHandler, { passive: true });
+    scrollHandler(); // check inicial
+})();
