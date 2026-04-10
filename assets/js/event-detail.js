@@ -24,10 +24,17 @@ async function loadEventDetail() {
         if (docSnap.exists()) {
             const ev = docSnap.data();
             
-            // Aquí inyectamos el HTML con el nuevo diseño Premium
+            // Lógica para el badge dinámico (TRIAL, CURSO, etc.)
+            // Si el campo no existe en Firebase, usamos 'trial' por defecto
+            const tipoEvento = ev.tipo_evento || 'trial';
+
+            // Inyectamos el HTML con el badge dinámico incluido
             container.innerHTML = `
                 <div class="premium-wrapper">
                     <div class="premium-image">
+                        <span class="card-badge ${tipoEvento.toLowerCase()}" style="position: absolute; top: 20px; left: 20px; z-index: 10;">
+                            ${tipoEvento.toUpperCase()}
+                        </span>
                         <img src="${ev.imageUrl}" alt="Cartell ${ev.title}">
                     </div>
                     <div class="premium-info">
