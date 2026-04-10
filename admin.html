@@ -9,12 +9,35 @@
     .admin-container { max-width: 600px; margin: 120px auto; padding: 30px; background: var(--bg-card); border-radius: var(--radius-lg); border: 1px solid var(--border); }
     .form-group { margin-bottom: 20px; }
     .form-group label { display: block; color: var(--orange); margin-bottom: 8px; font-family: 'Barlow Condensed', sans-serif; font-weight: 600; text-transform: uppercase; }
-    .form-group input, .form-group textarea { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px; font-family: 'Barlow', sans-serif; }
-    .form-group input:focus { border-color: var(--orange); outline: none; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 12px; background: var(--bg); border: 1px solid var(--border); color: #fff; border-radius: 8px; font-family: 'Barlow', sans-serif; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--orange); outline: none; }
     #admin-panel { display: none; }
     .status-msg { padding: 10px; border-radius: 5px; margin-top: 10px; display: none; }
     .success { background: rgba(0, 255, 0, 0.1); color: #00ff00; border: 1px solid #00ff00; }
     .error { background: rgba(255, 0, 0, 0.1); color: #ff4444; border: 1px solid #ff4444; }
+
+    /* MODAL D'EDICIÓ */
+    #edit-modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.88); z-index: 10000;
+      display: flex; justify-content: center; align-items: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+      backdrop-filter: blur(5px); overflow-y: auto;
+    }
+    #edit-modal.show { opacity: 1; pointer-events: auto; }
+    .edit-box {
+      background: var(--bg-card, #1a1a1a); padding: 40px; border-radius: 16px;
+      border: 1px solid var(--orange, #E8650A); width: 90%; max-width: 560px;
+      transform: translateY(-20px); transition: transform 0.3s ease;
+      margin: 20px auto;
+    }
+    #edit-modal.show .edit-box { transform: translateY(0); }
+    .edit-box h2 { color: var(--orange, #E8650A); font-family: 'Barlow Condensed', sans-serif; text-transform: uppercase; margin-bottom: 25px; }
+    .edit-img-preview { width: 100%; max-height: 180px; object-fit: contain; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border, #2a2a2a); display: none; }
+    .edit-btns { display: flex; gap: 12px; margin-top: 25px; }
+    .edit-btns button { flex: 1; padding: 14px; border-radius: 8px; font-family: 'Barlow Condensed', sans-serif; font-size: 1.1rem; text-transform: uppercase; cursor: pointer; border: none; }
+    #edit-cancel-btn { background: #333; color: #fff; }
+    #edit-save-btn { background: var(--orange, #E8650A); color: #fff; }
   </style>
 </head>
 <body>
@@ -42,7 +65,7 @@
       <div class="form-group"><label>Enllaç Inscripció / Info</label><input type="url" id="ev-link" placeholder="https://instagram.com/..."></div>
       <div class="form-group"><label>Cartell (Imatge)</label><input type="file" id="ev-image" accept="image/*"></div>
       <div class="form-group">
-      <label for="tipo_evento">¿QUÉ ES?</label>
+        <label for="tipo_evento">¿QUÉ ES?</label>
         <select name="tipo_evento" id="tipo_evento" required>
           <option value="trial">TRIAL</option>
           <option value="curs">CURS</option>
@@ -53,15 +76,47 @@
       <button id="create-event-btn" class="btn btn-primary" style="width:100%">Publicar Esdeveniment</button>
       <p id="upload-status" class="status-msg success">¡Event creat correctament!</p>
     </div>
-    <button id="create-event-btn" class="btn btn-primary" style="width:100%">Publicar Esdeveniment</button>
-      <p id="upload-status" class="status-msg success">¡Event creat correctament!</p>
-    </div> <div id="admin-list-section" class="admin-container" style="display:none; margin-top: 40px;">
+
+    <div id="admin-list-section" class="admin-container" style="display:none; margin-top: 40px;">
       <h2 style="color:white; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Gestió d'Esdeveniments</h2>
       <div id="events-list-admin">
         <p style="color: #888;">Carregant llista...</p>
       </div>
     </div>
   </main>
+
+  <!-- MODAL D'EDICIÓ -->
+  <div id="edit-modal">
+    <div class="edit-box">
+      <h2>✏️ Editar Esdeveniment</h2>
+
+      <div class="form-group"><label>Títol</label><input type="text" id="edit-title"></div>
+      <div class="form-group"><label>Data</label><input type="date" id="edit-date"></div>
+      <div class="form-group"><label>Ubicació</label><input type="text" id="edit-location"></div>
+      <div class="form-group"><label>Preu</label><input type="text" id="edit-price"></div>
+      <div class="form-group"><label>Enllaç Inscripció / Info</label><input type="url" id="edit-link"></div>
+      <div class="form-group">
+        <label>Tipus d'event</label>
+        <select id="edit-tipo">
+          <option value="trial">TRIAL</option>
+          <option value="curs">CURS</option>
+          <option value="altres">ALTRES</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Cartell actual</label>
+        <img id="edit-img-preview" class="edit-img-preview" src="" alt="Cartell actual">
+        <label style="margin-top:10px;">Canviar cartell (opcional)</label>
+        <input type="file" id="edit-image" accept="image/*">
+        <small style="color:#888; display:block; margin-top:6px;">Deixa buit per conservar el cartell actual</small>
+      </div>
+
+      <div class="edit-btns">
+        <button id="edit-cancel-btn">Cancel·lar</button>
+        <button id="edit-save-btn">💾 Guardar canvis</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module" src="assets/js/admin.js"></script>
 </body>

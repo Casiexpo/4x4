@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDly5eTPk_a1c1gtXQO4YI72V9Naqjz40o",
@@ -20,7 +20,6 @@ const db = getFirestore(app);
 // SISTEMA DE NOTIFICACIONES CUSTOM (TOASTS Y MODAL)
 // =========================================================
 
-// 1. Inyectamos los estilos CSS dinámicamente
 const style = document.createElement('style');
 style.textContent = `
     #custom-toast-container { position: fixed; bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
@@ -36,7 +35,6 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// 2. Creamos el contenedor de las notificaciones flotantes
 const toastContainer = document.createElement('div');
 toastContainer.id = 'custom-toast-container';
 document.body.appendChild(toastContainer);
@@ -49,11 +47,10 @@ function showToast(msg, type = 'success') {
     setTimeout(() => toast.classList.add('show'), 10);
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400); // Espera a que termine la animación para borrarlo
-    }, 3500); // La notificación dura 3.5 segundos
+        setTimeout(() => toast.remove(), 400);
+    }, 3500);
 }
 
-// 3. Creamos el Modal de confirmación para borrar
 const confirmModal = document.createElement('div');
 confirmModal.id = 'custom-confirm-modal';
 confirmModal.innerHTML = `
@@ -70,22 +67,15 @@ document.body.appendChild(confirmModal);
 
 function customConfirm(msg) {
     return new Promise((resolve) => {
-        document.getElementById('confirm-msg').textContent = msg;
+        document.getElementById('confirm-msg').innerHTML = msg;
         confirmModal.classList.add('show');
-        
-        document.getElementById('confirm-cancel').onclick = () => {
-            confirmModal.classList.remove('show');
-            resolve(false);
-        };
-        document.getElementById('confirm-ok').onclick = () => {
-            confirmModal.classList.remove('show');
-            resolve(true);
-        };
+        document.getElementById('confirm-cancel').onclick = () => { confirmModal.classList.remove('show'); resolve(false); };
+        document.getElementById('confirm-ok').onclick = () => { confirmModal.classList.remove('show'); resolve(true); };
     });
 }
 
 // =========================================================
-// LÓGICA PRINCIPAL (LOGIN, SUBIR, BORRAR)
+// LÒGICA PRINCIPAL (LOGIN, CREAR, EDITAR, ELIMINAR)
 // =========================================================
 
 const loginSec = document.getElementById('login-section');
@@ -93,13 +83,13 @@ const adminSec = document.getElementById('admin-panel');
 const listSec = document.getElementById('admin-list-section');
 
 onAuthStateChanged(auth, (user) => {
-    if (user) { 
-        loginSec.style.display = 'none'; 
+    if (user) {
+        loginSec.style.display = 'none';
         adminSec.style.display = 'block';
-        listSec.style.display = 'block'; 
-        loadAdminEvents(); 
-    } else { 
-        loginSec.style.display = 'block'; 
+        listSec.style.display = 'block';
+        loadAdminEvents();
+    } else {
+        loginSec.style.display = 'block';
         adminSec.style.display = 'none';
         listSec.style.display = 'none';
     }
@@ -123,18 +113,13 @@ const toBase64 = file => new Promise((resolve, reject) => {
     reader.onerror = error => reject(error);
 });
 
+// ---- CREAR ESDEVENIMENT ----
 document.getElementById('create-event-btn').addEventListener('click', async (e) => {
     const btn = e.target;
     const file = document.getElementById('ev-image').files[0];
-    
-    if (!file) { 
-        showToast("Si us plau, puja el cartell de l'esdeveniment", "error"); 
-        return; 
-    }
-    if (!document.getElementById('ev-title').value) {
-        showToast("Has d'escriure un títol", "error"); 
-        return; 
-    }
+
+    if (!file) { showToast("Si us plau, puja el cartell de l'esdeveniment", "error"); return; }
+    if (!document.getElementById('ev-title').value) { showToast("Has d'escriure un títol", "error"); return; }
 
     btn.disabled = true; btn.textContent = "Guardant dades...";
 
@@ -150,25 +135,24 @@ document.getElementById('create-event-btn').addEventListener('click', async (e) 
             tipo_evento: document.getElementById('tipo_evento').value,
             timestamp: new Date().getTime()
         });
-        
-        showToast("Esdeveniment publicat amb èxit!"); // Notificación guapa
-        
-        // Esperamos 2 segundos para que el usuario lea la notificación antes de recargar
-        setTimeout(() => window.location.reload(), 2000); 
+
+        showToast("Esdeveniment publicat amb èxit!");
+        setTimeout(() => window.location.reload(), 2000);
     } catch (err) {
-        console.error(err); 
+        console.error(err);
         showToast("Error de connexió al guardar", "error");
         btn.disabled = false;
         btn.textContent = "Publicar Esdeveniment";
     }
 });
 
+// ---- CARREGAR LLISTA D'ADMIN ----
 async function loadAdminEvents() {
     const container = document.getElementById('events-list-admin');
     try {
         const q = query(collection(db, "events"), orderBy("date", "asc"));
         const snap = await getDocs(q);
-        
+
         if (snap.empty) {
             container.innerHTML = "<p style='color:#888; text-align:center; padding:20px;'>Encara no hi ha esdeveniments.</p>";
             return;
@@ -177,16 +161,28 @@ async function loadAdminEvents() {
         container.innerHTML = '';
         snap.forEach(docSnap => {
             const ev = docSnap.data();
+            const tipo = ev.tipo_evento || 'trial';
             const div = document.createElement('div');
-            div.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--bg, #0d0d0d); margin-bottom:10px; border-radius:8px; border:1px solid var(--border, #2a2a2a); transition: border-color 0.3s;";
+            div.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--bg, #0d0d0d); margin-bottom:10px; border-radius:8px; border:1px solid var(--border, #2a2a2a); gap:10px;";
             div.innerHTML = `
-                <div>
-                    <strong style="color:var(--orange); display:block; font-size:1.1rem; margin-bottom:5px;">${ev.title}</strong>
-                    <span style="color:#aaa; font-size:0.9rem;">📅 ${ev.date} &nbsp;|&nbsp; 📍 ${ev.location}</span>
+                <div style="flex:1; min-width:0;">
+                    <strong style="color:var(--orange); display:block; font-size:1.1rem; margin-bottom:4px;">${ev.title}</strong>
+                    <span style="color:#aaa; font-size:0.85rem;">📅 ${ev.date} &nbsp;|&nbsp; 📍 ${ev.location} &nbsp;|&nbsp; <span style="text-transform:uppercase; color:#ccc;">${tipo}</span></span>
                 </div>
-                <button class="btn delete-btn" data-id="${docSnap.id}" style="background:#ff3333; color:white; padding:8px 15px; font-size:0.9rem; border-radius:6px; flex-shrink:0; margin-left:15px;">Eliminar</button>
+                <div style="display:flex; gap:8px; flex-shrink:0;">
+                    <button class="btn edit-btn" data-id="${docSnap.id}" style="background:#2563eb; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">✏️ Editar</button>
+                    <button class="btn delete-btn" data-id="${docSnap.id}" style="background:#ff3333; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">Eliminar</button>
+                </div>
             `;
             container.appendChild(div);
+        });
+
+        document.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = e.target.getAttribute('data-id');
+                const eventData = snap.docs.find(d => d.id === id)?.data();
+                if (eventData) openEditModal(id, eventData);
+            });
         });
 
         document.querySelectorAll('.delete-btn').forEach(btn => {
@@ -199,25 +195,101 @@ async function loadAdminEvents() {
     }
 }
 
+// ---- MODAL D'EDICIÓ ----
+const editModal = document.getElementById('edit-modal');
+let currentEditId = null;
+
+function openEditModal(id, ev) {
+    currentEditId = id;
+
+    document.getElementById('edit-title').value    = ev.title    || '';
+    document.getElementById('edit-date').value     = ev.date     || '';
+    document.getElementById('edit-location').value = ev.location || '';
+    document.getElementById('edit-price').value    = ev.price    || '';
+    document.getElementById('edit-link').value     = ev.link     || '';
+    document.getElementById('edit-tipo').value     = ev.tipo_evento || 'trial';
+
+    const preview = document.getElementById('edit-img-preview');
+    if (ev.imageUrl) {
+        preview.src = ev.imageUrl;
+        preview.style.display = 'block';
+    } else {
+        preview.style.display = 'none';
+    }
+
+    document.getElementById('edit-image').value = '';
+    editModal.classList.add('show');
+}
+
+document.getElementById('edit-cancel-btn').addEventListener('click', () => {
+    editModal.classList.remove('show');
+    currentEditId = null;
+});
+
+editModal.addEventListener('click', (e) => {
+    if (e.target === editModal) {
+        editModal.classList.remove('show');
+        currentEditId = null;
+    }
+});
+
+document.getElementById('edit-save-btn').addEventListener('click', async () => {
+    if (!currentEditId) return;
+
+    const saveBtn = document.getElementById('edit-save-btn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = "Guardant...";
+
+    try {
+        const newFile = document.getElementById('edit-image').files[0];
+
+        const updatedData = {
+            title:       document.getElementById('edit-title').value,
+            date:        document.getElementById('edit-date').value,
+            location:    document.getElementById('edit-location').value,
+            price:       document.getElementById('edit-price').value,
+            link:        document.getElementById('edit-link').value,
+            tipo_evento: document.getElementById('edit-tipo').value,
+        };
+
+        if (newFile) {
+            updatedData.imageUrl = await toBase64(newFile);
+        }
+
+        await updateDoc(doc(db, "events", currentEditId), updatedData);
+
+        showToast("Canvis guardats correctament!");
+        editModal.classList.remove('show');
+        currentEditId = null;
+        loadAdminEvents();
+    } catch (err) {
+        console.error(err);
+        showToast("Error al guardar els canvis", "error");
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "💾 Guardar canvis";
+    }
+});
+
+// ---- ELIMINAR ----
 async function deleteEvent(e) {
     const eventId = e.target.getAttribute('data-id');
-    const title = e.target.parentElement.querySelector('strong').textContent;
-    
-    // Aquí llamamos a la ventana de confirmación guapa en vez de la fea del navegador
-    const isConfirmed = await customConfirm(`Estàs a punt d'esborrar permanentment el trial:<br><strong style="color:white; display:block; margin-top:10px;">${title}</strong><br>Aquesta acció no es pot desfer.`);
-    
+    const title = e.target.closest('div[style]').querySelector('strong').textContent;
+
+    const isConfirmed = await customConfirm(`Estàs a punt d'esborrar permanentment l'esdeveniment:<br><strong style="color:white; display:block; margin-top:10px;">${title}</strong><br>Aquesta acció no es pot desfer.`);
+
     if (isConfirmed) {
         e.target.textContent = "Esborrant...";
         e.target.disabled = true;
         e.target.style.opacity = '0.5';
-        
+
         try {
             await deleteDoc(doc(db, "events", eventId));
-            showToast("Esdeveniment eliminat correctament!"); // Notificación verde
-            loadAdminEvents(); 
+            showToast("Esdeveniment eliminat correctament!");
+            loadAdminEvents();
         } catch (error) {
             console.error(error);
-            showToast("No s'ha pogut esborrar", "error"); // Notificación roja
+            showToast("No s'ha pogut esborrar", "error");
             e.target.textContent = "Eliminar";
             e.target.disabled = false;
             e.target.style.opacity = '1';
