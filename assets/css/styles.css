@@ -929,12 +929,28 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ============================================================
-   Cartell TRIAL - CURS
+   Cartell DINÁMICO ARREGLADO
    ============================================================ */
+.card-badge {
+    position: absolute;
+    top: 12px; 
+    left: 12px;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    padding: 6px 12px;
+    color: #fff !important;
+    z-index: 5;
+    text-align: center;
+    min-width: 70px;
+}
 
-.card-badge.trial { background: #E8650A !important; }
-.card-badge.curso { background: #A855F7 !important; }
-.card-badge.otros { background: #64748B !important; }
+.card-badge.trial { background: #E8650A !important; } /* Naranja */
+.card-badge.curso { background: #A855F7 !important; } /* Morado */
+.card-badge.otros { background: #64748B !important; } /* Gris */
 
 
 /* ============================================================

@@ -25,13 +25,17 @@ async function loadEvents() {
 
         snap.forEach(doc => {
             const ev = doc.data();
+            
+            // ESTA ES LA CLAVE: sacamos el tipo o ponemos trial por defecto
+            const tipo = ev.tipo_evento || 'trial'; 
+            
             const card = document.createElement('article');
             card.className = 'event-card';
             card.innerHTML = `
                 <a href="evento.html?id=${doc.id}" class="card-link">
                     <div class="card-img-wrap">
                         <img src="${ev.imageUrl}" class="card-img">
-                        <span class="card-badge trial">Trial</span>
+                        <span class="card-badge ${tipo.toLowerCase()}">${tipo.toUpperCase()}</span>
                     </div>
                     <div class="card-body">
                         <h3 class="card-title">${ev.title}</h3>
