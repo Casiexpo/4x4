@@ -147,6 +147,7 @@ document.getElementById('create-event-btn').addEventListener('click', async (e) 
             price: document.getElementById('ev-price').value,
             link: document.getElementById('ev-link').value,
             imageUrl: base64Img,
+            tipo_evento: document.getElementById('tipo_evento').value,
             timestamp: new Date().getTime()
         });
         
