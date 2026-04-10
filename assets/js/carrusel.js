@@ -5,11 +5,11 @@ document.addEventListener('DOMContentLoaded', () => {
        la carpeta 'carrusel', añade su nombre a esta lista.
        ================================================================= */
     const fotos = [
-        'foto1.jpg',
-        'foto2.jpg',
-        'foto3.jpg',
-        'foto4.jpg',
-        'foto5.jpg' // <-- Añade una coma al final si pones más debajo
+        'foto1.JPG',
+        'foto2.JPG',
+        'foto3.JPG',
+        'foto4.JPG',
+        'foto5.JPG' // <-- Añade una coma al final si pones más debajo
     ];
 
     const track = document.getElementById('carrusel-track');
