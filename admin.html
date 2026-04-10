@@ -41,6 +41,14 @@
       <div class="form-group"><label>Preu</label><input type="text" id="ev-price" placeholder="Ex: 40€"></div>
       <div class="form-group"><label>Enllaç Inscripció / Info</label><input type="url" id="ev-link" placeholder="https://instagram.com/..."></div>
       <div class="form-group"><label>Cartell (Imatge)</label><input type="file" id="ev-image" accept="image/*"></div>
+      <div class="form-group">
+      <label for="tipo_evento">¿QUÉ ES?</label>
+        <select name="tipo_evento" id="tipo_evento" required>
+          <option value="trial">TRIAL</option>
+          <option value="curso">CURSO</option>
+          <option value="otros">OTROS</option>
+        </select>
+      </div>
       
       <button id="create-event-btn" class="btn btn-primary" style="width:100%">Publicar Esdeveniment</button>
       <p id="upload-status" class="status-msg success">¡Event creat correctament!</p>
