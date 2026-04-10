@@ -929,6 +929,15 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ============================================================
+   Cartell TRIAL - CURS
+   ============================================================ */
+
+/* Nuevos badges dinámicos */
+.card-badge.curso { background: rgba(168, 85, 247, 0.9); color: #fff; } /* Morado */
+.card-badge.otros { background: rgba(100, 116, 139, 0.9); color: #fff; } /* Gris oscuro */
+
+
+/* ============================================================
    ANIMATIONS
    ============================================================ */
 @keyframes fadeUp {
