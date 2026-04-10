@@ -1,12 +1,6 @@
 /* ============================================================
    4x4 CATALUNYA – STYLES.CSS
    Dark theme with orange accents. Clean, modern, responsive.
-
-   CANVIS RESPECTE LA VERSIO ANTERIOR:
-   1. Logo: nous estils per a .logo-img (mida responsive i alineacio)
-   2. Header: correccions responsive per evitar solapament logo/menu
-   3. Nav toggle (hamburguesa): millores de visibilitat i espai
-   4. Nova seccio .collab-section amb boto .btn-contact (mailto taronja)
    ============================================================ */
 
 /* ---- FONTS ------------------------------------------------- */
@@ -83,7 +77,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   white-space: nowrap;
 }
 
-/* Boto principal taronja (hero, inscripcions, etc.) */
 .btn-primary {
   background: var(--orange);
   color: #fff;
@@ -95,7 +88,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   box-shadow: 0 6px 28px rgba(232,101,10,0.5);
 }
 
-/* Boto tornar enrere */
 .btn-back {
   background: transparent;
   color: var(--text-muted);
@@ -108,7 +100,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transform: translateX(-3px);
 }
 
-/* Boto de les cards d'event */
 .btn-card {
   display: inline-flex;
   align-items: center;
@@ -124,11 +115,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .btn-card svg { transition: transform var(--transition); }
 
-/*
-  .btn-contact – Boto de contacte per correu (seccio "Vols col.laborar?")
-  Reutilitza la paleta taronja de .btn-primary amb lleugeres variacions:
-  fons semitransparent, border visible i mida lleugerament mes gran.
-*/
 .btn-contact {
   background: var(--orange);
   color: #fff;
@@ -139,7 +125,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  text-transform: lowercase;         /* el correu es mes llegible en minuscules */
+  text-transform: lowercase;
   display: inline-flex;
   align-items: center;
   gap: 10px;
@@ -176,29 +162,22 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .header-inner {
   max-width: var(--max-width);
   margin: 0 auto;
-  /* Padding lateral: deixem espai suficient per al logo i el hamburguesa */
   padding: 0 24px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;               /* gap reduit per evitar compressio del logo */
+  gap: 16px;
 }
 
-/* ---- Logo -------------------------------------------------- */
-/*
-  El logo combina la imatge (.logo-img) i el text (.logo-text).
-  flex-shrink: 0 impedeix que es comprimi quan el menu ocupa espai.
-*/
 .logo {
   display: flex;
   align-items: center;
   gap: 10px;
-  flex-shrink: 0;           /* el logo no es comprimeix mai */
-  min-width: 0;             /* permet que el text es talli si cal (no logo) */
+  flex-shrink: 0;
+  min-width: 0;
 }
 
-/* Imatge del logo: mida fixa en desktop, mes petita en mobil */
 .logo-img {
   width: 44px;
   height: 44px;
@@ -219,12 +198,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .logo-text strong { color: var(--orange); }
 .logo-x { color: var(--orange); margin: 0 1px; }
 
-/* ---- Nav --------------------------------------------------- */
 .main-nav {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-left: auto;        /* empeny el nav cap a la dreta */
+  margin-left: auto;
 }
 .nav-link {
   font-family: var(--font-display);
@@ -252,13 +230,8 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .nav-link:hover::after,
 .nav-link.active::after { transform: scaleX(1); }
 
-/* ---- Hamburguesa ------------------------------------------- */
-/*
-  El boto hamburguesa nomes es visible en pantalles petites (< 720px).
-  En desktop queda ocult (display: none).
-*/
 .nav-toggle {
-  display: none;             /* ocult per defecte (desktop) */
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -279,23 +252,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transition: all var(--transition);
   display: block;
 }
-/* Animacio X quan el menu esta obert */
 .nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* ---- Nav mobil (< 720px) ----------------------------------- */
-/*
-  En mobil el nav es posiciona fixe just a sota del header.
-  S'amaga fora de pantalla (translateY negatiu) i es mostra
-  afegint la classe .open via JS.
-  z-index: 99 (per sota del header que es 100, per sobre del contingut).
-*/
 @media (max-width: 720px) {
-  .nav-toggle {
-    display: flex;           /* es mostra el hamburguesa */
-  }
-
+  .nav-toggle { display: flex; }
   .main-nav {
     position: fixed;
     top: var(--header-h);
@@ -308,50 +270,25 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
     padding: 16px 24px 24px;
     gap: 4px;
     border-bottom: 1px solid var(--border);
-    /* Amaga el menu: transla per sobre del header */
     transform: translateY(-110%);
     transition: transform 0.3s ease;
     z-index: 99;
     margin-left: 0;
   }
-
-  .main-nav.open {
-    transform: translateY(0); /* Mostra el menu */
-  }
-
-  .nav-link {
-    font-size: 1.05rem;
-    width: 100%;
-    text-align: center;
-    padding: 12px 16px;
-  }
-
-  /* Mida del logo mes petita en mobil per no ocupar tot el header */
-  .logo-img {
-    width: 36px;
-    height: 36px;
-  }
-
-  /* Reduim el text del logo en mobil per evitar tall */
-  .logo-text {
-    font-size: 1.1rem;
-  }
-
-  /* Reduim el padding del header en mobil */
-  .header-inner {
-    padding: 0 16px;
-    gap: 8px;
-  }
+  .main-nav.open { transform: translateY(0); }
+  .nav-link { font-size: 1.05rem; width: 100%; text-align: center; padding: 12px 16px; }
+  .logo-img { width: 36px; height: 36px; }
+  .logo-text { font-size: 1.1rem; }
+  .header-inner { padding: 0 16px; gap: 8px; }
 }
 
-/* Pantalla molt petita: amaguem el text del logo, deixem solo la imatge */
 @media (max-width: 380px) {
   .logo-text { display: none; }
   .logo-img  { width: 40px; height: 40px; }
 }
 
 /* ============================================================
-   HERO
+   HERO (CON LA FOTO RECUPERADA)
    ============================================================ */
 .hero {
   padding-top: calc(var(--header-h) + 60px);
@@ -363,16 +300,22 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .hero-bg {
   position: absolute;
   inset: 0;
+  /* AQUI ESTA TU FOTO: Cambia 'ruta-de-tu-foto.jpg' por el nombre de tu imagen */
+  background: url('/assets/img/hero-4x4.png') center/cover no-repeat;
+  opacity: 0.5; /* Ajusta esto si la foto brilla mucho y no deja leer el texto */
   pointer-events: none;
 }
+
+/* Gradientes superpuestos para mantener el efecto naranja/oscuro sobre la foto */
 .hero-bg::before {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(232,101,10,0.08) 0%, transparent 70%),
-    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(232,101,10,0.05) 0%, transparent 70%);
+    radial-gradient(ellipse 60% 50% at 80% 50%, rgba(232,101,10,0.15) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 20% 80%, rgba(232,101,10,0.1) 0%, transparent 70%);
 }
+
 .hero-track {
   position: absolute;
   bottom: 0; left: -5%; right: -5%;
@@ -381,7 +324,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   opacity: 0.3;
 }
 
-/* Grid lines de fons */
 .hero::after {
   content: '';
   position: absolute;
@@ -426,10 +368,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .hero-desc {
   max-width: 560px;
-  color: var(--text-muted);
+  color: #ddd; /* Un poco más claro para que resalte sobre la foto */
   font-size: 1.05rem;
   line-height: 1.7;
   margin-bottom: 36px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Sombra para que se lea bien sobre cualquier foto */
 }
 
 @media (max-width: 480px) {
@@ -444,9 +387,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   background: var(--bg-2);
 }
 
-.section-header {
-  margin-bottom: 40px;
-}
+.section-header { margin-bottom: 40px; }
 .section-header h2 {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4vw, 2.6rem);
@@ -455,10 +396,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: #fff;
   margin-bottom: 8px;
 }
-.section-header p {
-  color: var(--text-muted);
-  font-size: 1rem;
-}
+.section-header p { color: var(--text-muted); font-size: 1rem; }
 .section-eyebrow {
   display: inline-block;
   font-family: var(--font-display);
@@ -470,7 +408,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 12px;
 }
 
-/* Filter bar */
 .filter-bar {
   display: flex;
   gap: 8px;
@@ -496,14 +433,12 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   color: #fff;
 }
 
-/* Events Grid */
 .events-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 24px;
 }
 
-/* Event Card */
 .event-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -539,7 +474,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .event-card:hover .card-img { transform: scale(1.05); }
 
-/* Badges */
 .card-badge {
   position: absolute;
   top: 12px; left: 12px;
@@ -615,7 +549,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .event-card:hover .btn-card { gap: 10px; }
 .event-card:hover .btn-card svg { transform: translateX(3px); }
 
-/* No results */
 .no-results {
   text-align: center;
   padding: 60px 0;
@@ -623,7 +556,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ============================================================
-   INFO SECTION
+   INFO SECTION & CARRUSEL
    ============================================================ */
 .info-section {
   padding: 100px 0;
@@ -669,7 +602,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .info-visual { position: relative; }
 
-/* ---- CARRUSEL ---- */
 .carrusel-wrapper {
   position: relative;
   background: var(--bg-card);
@@ -692,11 +624,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .carrusel-slide img {
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Asegura que la foto llene el espacio sin deformarse */
+  object-fit: cover;
   display: block;
 }
 
-/* Controles del carrusel */
 .carrusel-btn {
   position: absolute;
   top: 50%;
@@ -715,14 +646,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transition: all var(--transition);
   z-index: 2;
 }
-.carrusel-btn:hover {
-  background: var(--orange);
-  transform: translateY(-50%) scale(1.1);
-}
+.carrusel-btn:hover { background: var(--orange); transform: translateY(-50%) scale(1.1); }
 .carrusel-btn.prev { left: 16px; }
 .carrusel-btn.next { right: 16px; }
 
-/* Puntos de navegación */
 .carrusel-dots {
   position: absolute;
   bottom: 20px;
@@ -740,17 +667,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   cursor: pointer;
   transition: all var(--transition);
 }
-.carrusel-dot:hover {
-  background: rgba(255, 255, 255, 0.8);
-}
-.carrusel-dot.active {
-  background: var(--orange);
-  transform: scale(1.2);
-}
+.carrusel-dot:hover { background: rgba(255, 255, 255, 0.8); }
+.carrusel-dot.active { background: var(--orange); transform: scale(1.2); }
 
 /* ============================================================
-   SECCIO "VOLS COL.LABORAR?" – Nova seccio de contacte
-   Centrada, fons lleugerament diferent per crear separacio visual.
+   SECCIO "VOLS COL.LABORAR?"
    ============================================================ */
 .collab-section {
   padding: 100px 0;
@@ -758,13 +679,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   border-top: 1px solid var(--border);
 }
 
-/* Contingut centrat amb max-width per legibilitat */
 .collab-inner {
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
 }
-
 .collab-inner h2 {
   font-family: var(--font-display);
   font-size: clamp(1.8rem, 4vw, 2.4rem);
@@ -773,8 +692,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 16px;
   line-height: 1.1;
 }
-
-/* Text descriptiu de la seccio */
 .collab-desc {
   color: var(--text-muted);
   font-size: 1rem;
@@ -782,13 +699,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-bottom: 36px;
 }
 
-/* Responsive: padding reduit en mobil */
 @media (max-width: 600px) {
   .collab-section { padding: 64px 0; }
   .btn-contact {
     font-size: 0.85rem;
     padding: 12px 20px;
-    /* Permet que el correu es talli en dues linies si cal */
     white-space: normal;
     text-align: center;
     justify-content: center;
@@ -869,7 +784,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   min-height: 100vh;
 }
 
-/* Event hero image */
 .event-hero {
   position: relative;
   background: var(--bg-2);
@@ -901,19 +815,14 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .event-hero-badge.rali     { background: rgba(74,222,128,0.9); color: #000; }
 .event-hero-badge.excursio { background: rgba(99,179,237,0.9); color: #000; }
 
-/* Event body */
-.event-body {
-  padding: 64px 0 80px;
-}
+.event-body { padding: 64px 0 80px; }
 .event-layout {
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 60px;
   align-items: start;
 }
-@media (max-width: 900px) {
-  .event-layout { grid-template-columns: 1fr; }
-}
+@media (max-width: 900px) { .event-layout { grid-template-columns: 1fr; } }
 
 .event-title {
   font-family: var(--font-display);
@@ -933,7 +842,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 .event-desc strong { color: var(--text); }
 
-/* Info card lateral */
 .event-info-card {
   background: var(--bg-card);
   border: 1px solid var(--border);
@@ -997,7 +905,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   margin-top: 24px;
 }
 
-/* Breadcrumb de navegacio */
 .event-breadcrumb {
   padding: 20px 0;
   display: flex;
@@ -1008,16 +915,10 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   border-bottom: 1px solid var(--border);
   margin-bottom: 48px;
 }
-.event-breadcrumb a {
-  color: var(--orange);
-  transition: color var(--transition);
-}
+.event-breadcrumb a { color: var(--orange); transition: color var(--transition); }
 .event-breadcrumb a:hover { color: var(--orange-l); }
 .event-breadcrumb span { color: var(--text-dim); }
 
-/* ============================================================
-   PLACEHOLDER SVG (quan no hi ha imatge)
-   ============================================================ */
 .placeholder-img {
   width: 100%;
   height: 100%;
@@ -1047,9 +948,3 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .event-card:nth-child(4) { animation-delay: 0.20s; }
 .event-card:nth-child(5) { animation-delay: 0.25s; }
 .event-card:nth-child(6) { animation-delay: 0.30s; }
-
-/* =========================== */
-
-imaje{
-  background-image: url("/4x4/assets/img/hero-4x4.png") !important;
-}
