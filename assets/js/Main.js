@@ -14,6 +14,50 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const EVENTS_PER_PAGE = 6;
+let allEvents = [];
+let currentCount = 0;
+
+function renderEvents() {
+    const grid = document.getElementById('events-grid');
+    const nextBatch = allEvents.slice(currentCount, currentCount + EVENTS_PER_PAGE);
+
+    nextBatch.forEach(({ id, data: ev }) => {
+        const tipo = ev.tipo_evento || 'trial';
+        const card = document.createElement('article');
+        card.className = 'event-card';
+        card.innerHTML = `
+            <a href="evento.html?id=${id}" class="card-link">
+                <div class="card-img-wrap">
+                    <img src="${ev.imageUrl}" class="card-img" alt="${ev.title}" loading="lazy">
+                    <span class="card-badge ${tipo.toLowerCase()}">${tipo.toUpperCase()}</span>
+                </div>
+                <div class="card-body">
+                    <h3 class="card-title">${ev.title}</h3>
+                    <ul class="card-meta">
+                        <li><span>📅</span> ${ev.date}</li>
+                        <li><span>📍</span> ${ev.location}</li>
+                        <li><span>💶</span> ${ev.price}</li>
+                    </ul>
+                </div>
+            </a>
+        `;
+        grid.appendChild(card);
+    });
+
+    currentCount += nextBatch.length;
+
+    // Actualitzar botó "Veure més"
+    const btn = document.getElementById('load-more-btn');
+    if (btn) {
+        if (currentCount >= allEvents.length) {
+            btn.style.display = 'none';
+        } else {
+            btn.style.display = 'inline-block';
+        }
+    }
+}
+
 async function loadEvents() {
     const grid = document.getElementById('events-grid');
     if (!grid) return;
@@ -23,32 +67,32 @@ async function loadEvents() {
         const snap = await getDocs(q);
         grid.innerHTML = '';
 
-        snap.forEach(doc => {
-            const ev = doc.data();
-            
-            // ESTA ES LA CLAVE: sacamos el tipo o ponemos trial por defecto
-            const tipo = ev.tipo_evento || 'trial'; 
-            
-            const card = document.createElement('article');
-            card.className = 'event-card';
-            card.innerHTML = `
-                <a href="evento.html?id=${doc.id}" class="card-link">
-                    <div class="card-img-wrap">
-                        <img src="${ev.imageUrl}" class="card-img">
-                        <span class="card-badge ${tipo.toLowerCase()}">${tipo.toUpperCase()}</span>
-                    </div>
-                    <div class="card-body">
-                        <h3 class="card-title">${ev.title}</h3>
-                        <ul class="card-meta">
-                            <li><span>📅</span> ${ev.date}</li>
-                            <li><span>📍</span> ${ev.location}</li>
-                            <li><span>💶</span> ${ev.price}</li>
-                        </ul>
-                    </div>
-                </a>
-            `;
-            grid.appendChild(card);
-        });
+        allEvents = snap.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+        currentCount = 0;
+
+        if (allEvents.length === 0) {
+            grid.innerHTML = '<p style="color: white; text-align: center; grid-column: 1/-1;">Encara no hi ha esdeveniments publicats.</p>';
+            return;
+        }
+
+        // Primer lot de 6
+        renderEvents();
+
+        // Botó "Veure més"
+        const section = document.getElementById('events');
+        if (section && !document.getElementById('load-more-btn')) {
+            const wrapper = document.createElement('div');
+            wrapper.style.cssText = 'text-align: center; margin-top: 40px; padding-bottom: 20px;';
+            const btn = document.createElement('button');
+            btn.id = 'load-more-btn';
+            btn.className = 'btn btn-primary';
+            btn.textContent = 'Veure més';
+            btn.style.display = currentCount >= allEvents.length ? 'none' : 'inline-block';
+            btn.addEventListener('click', renderEvents);
+            wrapper.appendChild(btn);
+            section.querySelector('.container').appendChild(wrapper);
+        }
+
     } catch (e) { console.error(e); }
 }
 
