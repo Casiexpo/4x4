@@ -171,7 +171,7 @@ async function loadAdminEvents() {
                 </div>
                 <div style="display:flex; gap:8px; flex-shrink:0;">
                     <button class="btn edit-btn" data-id="${docSnap.id}" style="background:#2563eb; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">✏️ Editar</button>
-                    <button class="btn delete-btn" data-id="${docSnap.id}" style="background:#ff3333; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">Eliminar</button>
+                    <button class="btn delete-btn" data-id="${docSnap.id}" data-title="${ev.title}" style="background:#ff3333; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">Eliminar</button>
                 </div>
             `;
             container.appendChild(div);
@@ -276,7 +276,7 @@ async function deleteEvent(e) {
     const btn = e.target.closest('.delete-btn');
     if (!btn) return;
     const eventId = btn.getAttribute('data-id');
-    const title = btn.closest('div[style]').querySelector('strong').textContent;
+    const title = btn.getAttribute('data-title');
 
     const isConfirmed = await customConfirm(`Estàs a punt d'esborrar permanentment l'esdeveniment:<br><strong style="color:white; display:block; margin-top:10px;">${title}</strong><br>Aquesta acció no es pot desfer.`);
 
