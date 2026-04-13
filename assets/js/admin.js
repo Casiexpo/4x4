@@ -80,24 +80,24 @@ function customConfirm(msg) {
 
 const loginSec = document.getElementById('login-section');
 const adminSec = document.getElementById('admin-panel');
-const listSec = document.getElementById('admin-list-section');
+const listSec  = document.getElementById('admin-list-section');
 
 onAuthStateChanged(auth, (user) => {
     if (user) {
         loginSec.style.display = 'none';
         adminSec.style.display = 'block';
-        listSec.style.display = 'block';
+        listSec.style.display  = 'block';
         loadAdminEvents();
     } else {
         loginSec.style.display = 'block';
         adminSec.style.display = 'none';
-        listSec.style.display = 'none';
+        listSec.style.display  = 'none';
     }
 });
 
 document.getElementById('login-btn').addEventListener('click', () => {
     const email = document.getElementById('email').value;
-    const pass = document.getElementById('password').value;
+    const pass  = document.getElementById('password').value;
     signInWithEmailAndPassword(auth, email, pass).catch(() => {
         document.getElementById('login-error').style.display = 'block';
         showToast("Credencials incorrectes", "error");
@@ -109,31 +109,37 @@ document.getElementById('logout-btn').addEventListener('click', () => signOut(au
 const toBase64 = file => new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
+    reader.onload  = () => resolve(reader.result);
     reader.onerror = error => reject(error);
 });
 
 // ---- CREAR ESDEVENIMENT ----
 document.getElementById('create-event-btn').addEventListener('click', async (e) => {
-    const btn = e.target;
+    const btn  = e.target;
     const file = document.getElementById('ev-image').files[0];
 
     if (!file) { showToast("Si us plau, puja el cartell de l'esdeveniment", "error"); return; }
     if (!document.getElementById('ev-title').value) { showToast("Has d'escriure un títol", "error"); return; }
 
-    btn.disabled = true; btn.textContent = "Guardant dades...";
+    btn.disabled    = true;
+    btn.textContent = "Guardant dades...";
 
     try {
         const base64Img = await toBase64(file);
+        const priceVal  = document.getElementById('ev-price').value.trim();
+
         await addDoc(collection(db, "events"), {
-            title: document.getElementById('ev-title').value,
-            date: document.getElementById('ev-date').value,
-            location: document.getElementById('ev-location').value,
-            price: document.getElementById('ev-price').value,
-            link: document.getElementById('ev-link').value,
-            imageUrl: base64Img,
-            tipo_evento: document.getElementById('tipo_evento').value,
-            timestamp: new Date().getTime()
+            title:        document.getElementById('ev-title').value,
+            date_start:   document.getElementById('ev-date-start').value,
+            date_end:     document.getElementById('ev-date-end').value,
+            location:     document.getElementById('ev-location').value,
+            price_public: priceVal || 'GRATIS',
+            link:         document.getElementById('ev-link').value,
+            imageUrl:     base64Img,
+            tipo_evento:  document.getElementById('tipo_evento').value,
+            food_trucks:  document.getElementById('ev-food-trucks').checked,
+            zona_crawler: document.getElementById('ev-crawler').checked,
+            timestamp:    new Date().getTime()
         });
 
         showToast("Esdeveniment publicat amb èxit!");
@@ -141,7 +147,7 @@ document.getElementById('create-event-btn').addEventListener('click', async (e) 
     } catch (err) {
         console.error(err);
         showToast("Error de connexió al guardar", "error");
-        btn.disabled = false;
+        btn.disabled    = false;
         btn.textContent = "Publicar Esdeveniment";
     }
 });
@@ -150,7 +156,7 @@ document.getElementById('create-event-btn').addEventListener('click', async (e) 
 async function loadAdminEvents() {
     const container = document.getElementById('events-list-admin');
     try {
-        const q = query(collection(db, "events"), orderBy("date", "asc"));
+        const q    = query(collection(db, "events"), orderBy("date_start", "asc"));
         const snap = await getDocs(q);
 
         if (snap.empty) {
@@ -160,14 +166,26 @@ async function loadAdminEvents() {
 
         container.innerHTML = '';
         snap.forEach(docSnap => {
-            const ev = docSnap.data();
+            const ev   = docSnap.data();
             const tipo = ev.tipo_evento || 'trial';
+            // Compatibilitat amb events antics que usaven "date"
+            const dateStart = ev.date_start || ev.date || '';
+            const dateEnd   = ev.date_end   || '';
+            const dateStr   = dateEnd && dateEnd !== dateStart
+                ? `${dateStart} → ${dateEnd}`
+                : dateStart;
+
             const div = document.createElement('div');
             div.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--bg, #0d0d0d); margin-bottom:10px; border-radius:8px; border:1px solid var(--border, #2a2a2a); gap:10px;";
             div.innerHTML = `
                 <div style="flex:1; min-width:0;">
                     <strong style="color:var(--orange); display:block; font-size:1.1rem; margin-bottom:4px;">${ev.title}</strong>
-                    <span style="color:#aaa; font-size:0.85rem;">📅 ${ev.date} &nbsp;|&nbsp; 📍 ${ev.location} &nbsp;|&nbsp; <span style="text-transform:uppercase; color:#ccc;">${tipo}</span></span>
+                    <span style="color:#aaa; font-size:0.85rem;">
+                        📅 ${dateStr} &nbsp;|&nbsp; 📍 ${ev.location} &nbsp;|&nbsp;
+                        <span style="text-transform:uppercase; color:#ccc;">${tipo}</span>
+                        ${ev.food_trucks  ? '&nbsp; 🍔 Food Trucks' : ''}
+                        ${ev.zona_crawler ? '&nbsp; 🚗 Crawler/RC'  : ''}
+                    </span>
                 </div>
                 <div style="display:flex; gap:8px; flex-shrink:0;">
                     <button class="btn edit-btn" data-id="${docSnap.id}" style="background:#2563eb; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">✏️ Editar</button>
@@ -179,8 +197,9 @@ async function loadAdminEvents() {
 
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const id = e.target.getAttribute('data-id');
-                const eventData = snap.docs.find(d => d.id === id)?.data();
+                const clickedBtn = e.target.closest('.edit-btn');
+                const id         = clickedBtn.getAttribute('data-id');
+                const eventData  = snap.docs.find(d => d.id === id)?.data();
                 if (eventData) openEditModal(id, eventData);
             });
         });
@@ -196,25 +215,31 @@ async function loadAdminEvents() {
 }
 
 // ---- MODAL D'EDICIÓ ----
-const editModal = document.getElementById('edit-modal');
-let currentEditId = null;
+const editModal    = document.getElementById('edit-modal');
+let currentEditId  = null;
 
 function openEditModal(id, ev) {
     currentEditId = id;
 
-    document.getElementById('edit-title').value    = ev.title    || '';
-    document.getElementById('edit-date').value     = ev.date     || '';
-    document.getElementById('edit-location').value = ev.location || '';
-    document.getElementById('edit-price').value    = ev.price    || '';
-    document.getElementById('edit-link').value     = ev.link     || '';
-    document.getElementById('edit-tipo').value     = ev.tipo_evento || 'trial';
+    document.getElementById('edit-title').value      = ev.title       || '';
+    document.getElementById('edit-date-start').value = ev.date_start  || ev.date || '';
+    document.getElementById('edit-date-end').value   = ev.date_end    || '';
+    document.getElementById('edit-location').value   = ev.location    || '';
+    document.getElementById('edit-link').value       = ev.link        || '';
+    document.getElementById('edit-tipo').value       = ev.tipo_evento || 'trial';
+    document.getElementById('edit-food-trucks').checked = !!ev.food_trucks;
+    document.getElementById('edit-crawler').checked     = !!ev.zona_crawler;
+
+    // Preu: si és GRATIS mostra camp buit perquè el placeholder ja ho indica
+    const currentPrice = ev.price_public || ev.price || '';
+    document.getElementById('edit-price').value = currentPrice === 'GRATIS' ? '' : currentPrice;
 
     const preview = document.getElementById('edit-img-preview');
     if (ev.imageUrl) {
-        preview.src = ev.imageUrl;
-        preview.style.display = 'block';
+        preview.src            = ev.imageUrl;
+        preview.style.display  = 'block';
     } else {
-        preview.style.display = 'none';
+        preview.style.display  = 'none';
     }
 
     document.getElementById('edit-image').value = '';
@@ -237,19 +262,23 @@ document.getElementById('edit-save-btn').addEventListener('click', async () => {
     if (!currentEditId) return;
 
     const saveBtn = document.getElementById('edit-save-btn');
-    saveBtn.disabled = true;
+    saveBtn.disabled    = true;
     saveBtn.textContent = "Guardant...";
 
     try {
-        const newFile = document.getElementById('edit-image').files[0];
+        const newFile  = document.getElementById('edit-image').files[0];
+        const priceVal = document.getElementById('edit-price').value.trim();
 
         const updatedData = {
-            title:       document.getElementById('edit-title').value,
-            date:        document.getElementById('edit-date').value,
-            location:    document.getElementById('edit-location').value,
-            price:       document.getElementById('edit-price').value,
-            link:        document.getElementById('edit-link').value,
-            tipo_evento: document.getElementById('edit-tipo').value,
+            title:        document.getElementById('edit-title').value,
+            date_start:   document.getElementById('edit-date-start').value,
+            date_end:     document.getElementById('edit-date-end').value,
+            location:     document.getElementById('edit-location').value,
+            price_public: priceVal || 'GRATIS',
+            link:         document.getElementById('edit-link').value,
+            tipo_evento:  document.getElementById('edit-tipo').value,
+            food_trucks:  document.getElementById('edit-food-trucks').checked,
+            zona_crawler: document.getElementById('edit-crawler').checked,
         };
 
         if (newFile) {
@@ -266,7 +295,7 @@ document.getElementById('edit-save-btn').addEventListener('click', async () => {
         console.error(err);
         showToast("Error al guardar els canvis", "error");
     } finally {
-        saveBtn.disabled = false;
+        saveBtn.disabled    = false;
         saveBtn.textContent = "💾 Guardar canvis";
     }
 });
@@ -276,13 +305,17 @@ async function deleteEvent(e) {
     const btn = e.target.closest('.delete-btn');
     if (!btn) return;
     const eventId = btn.getAttribute('data-id');
-    const title = btn.getAttribute('data-title');
+    const title   = btn.getAttribute('data-title');
 
-    const isConfirmed = await customConfirm(`Estàs a punt d'esborrar permanentment l'esdeveniment:<br><strong style="color:white; display:block; margin-top:10px;">${title}</strong><br>Aquesta acció no es pot desfer.`);
+    const isConfirmed = await customConfirm(
+        `Estàs a punt d'esborrar permanentment l'esdeveniment:<br>
+         <strong style="color:white; display:block; margin-top:10px;">${title}</strong><br>
+         Aquesta acció no es pot desfer.`
+    );
 
     if (isConfirmed) {
-        btn.textContent = "Esborrant...";
-        btn.disabled = true;
+        btn.textContent   = "Esborrant...";
+        btn.disabled      = true;
         btn.style.opacity = '0.5';
 
         try {
@@ -292,8 +325,8 @@ async function deleteEvent(e) {
         } catch (error) {
             console.error(error);
             showToast("No s'ha pogut esborrar", "error");
-            btn.textContent = "Eliminar";
-            btn.disabled = false;
+            btn.textContent   = "Eliminar";
+            btn.disabled      = false;
             btn.style.opacity = '1';
         }
     }
