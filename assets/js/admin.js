@@ -273,15 +273,17 @@ document.getElementById('edit-save-btn').addEventListener('click', async () => {
 
 // ---- ELIMINAR ----
 async function deleteEvent(e) {
-    const eventId = e.target.getAttribute('data-id');
-    const title = e.target.closest('div[style]').querySelector('strong').textContent;
+    const btn = e.target.closest('.delete-btn');
+    if (!btn) return;
+    const eventId = btn.getAttribute('data-id');
+    const title = btn.closest('div[style]').querySelector('strong').textContent;
 
     const isConfirmed = await customConfirm(`Estàs a punt d'esborrar permanentment l'esdeveniment:<br><strong style="color:white; display:block; margin-top:10px;">${title}</strong><br>Aquesta acció no es pot desfer.`);
 
     if (isConfirmed) {
-        e.target.textContent = "Esborrant...";
-        e.target.disabled = true;
-        e.target.style.opacity = '0.5';
+        btn.textContent = "Esborrant...";
+        btn.disabled = true;
+        btn.style.opacity = '0.5';
 
         try {
             await deleteDoc(doc(db, "events", eventId));
@@ -290,9 +292,9 @@ async function deleteEvent(e) {
         } catch (error) {
             console.error(error);
             showToast("No s'ha pogut esborrar", "error");
-            e.target.textContent = "Eliminar";
-            e.target.disabled = false;
-            e.target.style.opacity = '1';
+            btn.textContent = "Eliminar";
+            btn.disabled = false;
+            btn.style.opacity = '1';
         }
     }
 }

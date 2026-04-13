@@ -120,15 +120,17 @@ async function loadEvents() {
             updateLoadMoreBtn();
         }
 
-        // Lligar botons de filtre
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
-        });
-
     } catch (e) { console.error(e); }
 }
 
-document.addEventListener('DOMContentLoaded', loadEvents);
+document.addEventListener('DOMContentLoaded', () => {
+    loadEvents();
+
+    // Lligar botons de filtre immediatament, no esperar Firebase
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+    });
+});
 
 // Classe "scrolled" al header quan es fa scroll
 (function() {
