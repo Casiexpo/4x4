@@ -47,7 +47,15 @@
     <section id="events" class="events-section">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Pròxims <span class="orange-text">Esdeveniments</span></h2>
+          <div class="section-header-row">
+            <h2 class="section-title">Pròxims <span class="orange-text">Esdeveniments</span></h2>
+            <div class="filter-btns" id="filter-btns">
+              <button class="filter-btn active" data-filter="tot">Tot</button>
+              <button class="filter-btn trial" data-filter="trial">Trial</button>
+              <button class="filter-btn curs" data-filter="curs">Curs</button>
+              <button class="filter-btn altres" data-filter="altres">Altres</button>
+            </div>
+          </div>
         </div>
         <div class="events-grid" id="events-grid">
           <p style="color: white; text-align: center; grid-column: 1/-1;">Carregant esdeveniments...</p>

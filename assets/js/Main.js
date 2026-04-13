@@ -16,46 +16,72 @@ const db = getFirestore(app);
 
 const EVENTS_PER_PAGE = 6;
 let allEvents = [];
+let filteredEvents = [];
 let currentCount = 0;
+let activeFilter = 'tot';
 
-function renderEvents() {
+function createCard(id, ev) {
+    const tipo = ev.tipo_evento || 'trial';
+    const card = document.createElement('article');
+    card.className = 'event-card';
+    card.innerHTML = `
+        <a href="evento.html?id=${id}" class="card-link">
+            <div class="card-img-wrap">
+                <img src="${ev.imageUrl}" class="card-img" alt="${ev.title}" loading="lazy">
+                <span class="card-badge ${tipo.toLowerCase()}">${tipo.toUpperCase()}</span>
+            </div>
+            <div class="card-body">
+                <h3 class="card-title">${ev.title}</h3>
+                <ul class="card-meta">
+                    <li><span>📅</span> ${ev.date}</li>
+                    <li><span>📍</span> ${ev.location}</li>
+                    <li><span>💶</span> ${ev.price}</li>
+                </ul>
+            </div>
+        </a>
+    `;
+    return card;
+}
+
+function updateLoadMoreBtn() {
+    const btn = document.getElementById('load-more-btn');
+    if (!btn) return;
+    btn.style.display = currentCount >= filteredEvents.length ? 'none' : 'inline-block';
+}
+
+function renderNextBatch() {
     const grid = document.getElementById('events-grid');
-    const nextBatch = allEvents.slice(currentCount, currentCount + EVENTS_PER_PAGE);
+    const nextBatch = filteredEvents.slice(currentCount, currentCount + EVENTS_PER_PAGE);
+    nextBatch.forEach(({ id, data: ev }) => grid.appendChild(createCard(id, ev)));
+    currentCount += nextBatch.length;
+    updateLoadMoreBtn();
+}
 
-    nextBatch.forEach(({ id, data: ev }) => {
-        const tipo = ev.tipo_evento || 'trial';
-        const card = document.createElement('article');
-        card.className = 'event-card';
-        card.innerHTML = `
-            <a href="evento.html?id=${id}" class="card-link">
-                <div class="card-img-wrap">
-                    <img src="${ev.imageUrl}" class="card-img" alt="${ev.title}" loading="lazy">
-                    <span class="card-badge ${tipo.toLowerCase()}">${tipo.toUpperCase()}</span>
-                </div>
-                <div class="card-body">
-                    <h3 class="card-title">${ev.title}</h3>
-                    <ul class="card-meta">
-                        <li><span>📅</span> ${ev.date}</li>
-                        <li><span>📍</span> ${ev.location}</li>
-                        <li><span>💶</span> ${ev.price}</li>
-                    </ul>
-                </div>
-            </a>
-        `;
-        grid.appendChild(card);
+function applyFilter(filter) {
+    activeFilter = filter;
+
+    // Actualitzar botons actius
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.filter === filter);
     });
 
-    currentCount += nextBatch.length;
+    // Filtrar events
+    filteredEvents = filter === 'tot'
+        ? [...allEvents]
+        : allEvents.filter(({ data: ev }) => (ev.tipo_evento || 'trial').toLowerCase() === filter);
 
-    // Actualitzar botó "Veure més"
-    const btn = document.getElementById('load-more-btn');
-    if (btn) {
-        if (currentCount >= allEvents.length) {
-            btn.style.display = 'none';
-        } else {
-            btn.style.display = 'inline-block';
-        }
+    // Reiniciar graella
+    const grid = document.getElementById('events-grid');
+    grid.innerHTML = '';
+    currentCount = 0;
+
+    if (filteredEvents.length === 0) {
+        grid.innerHTML = `<p style="color:#aaa; text-align:center; grid-column:1/-1; padding: 40px 0;">No hi ha esdeveniments d'aquest tipus.</p>`;
+        updateLoadMoreBtn();
+        return;
     }
+
+    renderNextBatch();
 }
 
 async function loadEvents() {
@@ -68,6 +94,7 @@ async function loadEvents() {
         grid.innerHTML = '';
 
         allEvents = snap.docs.map(doc => ({ id: doc.id, data: doc.data() }));
+        filteredEvents = [...allEvents];
         currentCount = 0;
 
         if (allEvents.length === 0) {
@@ -76,7 +103,7 @@ async function loadEvents() {
         }
 
         // Primer lot de 6
-        renderEvents();
+        renderNextBatch();
 
         // Botó "Veure més"
         const section = document.getElementById('events');
@@ -87,11 +114,16 @@ async function loadEvents() {
             btn.id = 'load-more-btn';
             btn.className = 'btn btn-primary';
             btn.textContent = 'Veure més';
-            btn.style.display = currentCount >= allEvents.length ? 'none' : 'inline-block';
-            btn.addEventListener('click', renderEvents);
+            btn.addEventListener('click', renderNextBatch);
             wrapper.appendChild(btn);
             section.querySelector('.container').appendChild(wrapper);
+            updateLoadMoreBtn();
         }
+
+        // Lligar botons de filtre
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => applyFilter(btn.dataset.filter));
+        });
 
     } catch (e) { console.error(e); }
 }
