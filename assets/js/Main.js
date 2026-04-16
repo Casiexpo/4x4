@@ -33,9 +33,10 @@ function createCard(id, ev) {
             <div class="card-body">
                 <h3 class="card-title">${ev.title}</h3>
                 <ul class="card-meta">
-                    <li><span>📅</span> ${ev.date}</li>
+                    <li><span>📅</span> ${ev.date_start || ev.date || ''}${ev.date_end && ev.date_end !== ev.date_start ? ' → ' + ev.date_end : ''}</li>
                     <li><span>📍</span> ${ev.location}</li>
-                    <li><span>💶</span> ${ev.price}</li>
+                    <li><span>💶</span> Públic: ${ev.price_public || ev.price || 'GRATIS'}</li>
+                    ${ev.price_participants ? `<li><span>🏁</span> Participants: ${ev.price_participants}</li>` : ''}
                 </ul>
             </div>
         </a>
@@ -89,7 +90,7 @@ async function loadEvents() {
     if (!grid) return;
 
     try {
-        const q = query(collection(db, "events"), orderBy("date", "asc"));
+        const q = query(collection(db, "events"), orderBy("date_start", "asc"));
         const snap = await getDocs(q);
         grid.innerHTML = '';
 

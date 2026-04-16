@@ -133,8 +133,9 @@ document.getElementById('create-event-btn').addEventListener('click', async (e) 
             date_start:   document.getElementById('ev-date-start').value,
             date_end:     document.getElementById('ev-date-end').value,
             location:     document.getElementById('ev-location').value,
-            price_public: priceVal || 'GRATIS',
-            link:         document.getElementById('ev-link').value,
+            price_public:        priceVal || 'GRATIS',
+            price_participants:  document.getElementById('ev-price-participants').value.trim() || '',
+            link:                document.getElementById('ev-link').value,
             imageUrl:     base64Img,
             tipo_evento:  document.getElementById('tipo_evento').value,
             food_trucks:  document.getElementById('ev-food-trucks').checked,
@@ -233,6 +234,7 @@ function openEditModal(id, ev) {
     // Preu: si és GRATIS mostra camp buit perquè el placeholder ja ho indica
     const currentPrice = ev.price_public || ev.price || '';
     document.getElementById('edit-price').value = currentPrice === 'GRATIS' ? '' : currentPrice;
+    document.getElementById('edit-price-participants').value = ev.price_participants || '';
 
     const preview = document.getElementById('edit-img-preview');
     if (ev.imageUrl) {
@@ -274,8 +276,9 @@ document.getElementById('edit-save-btn').addEventListener('click', async () => {
             date_start:   document.getElementById('edit-date-start').value,
             date_end:     document.getElementById('edit-date-end').value,
             location:     document.getElementById('edit-location').value,
-            price_public: priceVal || 'GRATIS',
-            link:         document.getElementById('edit-link').value,
+            price_public:        priceVal || 'GRATIS',
+            price_participants:  document.getElementById('edit-price-participants').value.trim() || '',
+            link:                document.getElementById('edit-link').value,
             tipo_evento:  document.getElementById('edit-tipo').value,
             food_trucks:  document.getElementById('edit-food-trucks').checked,
             zona_crawler: document.getElementById('edit-crawler').checked,
