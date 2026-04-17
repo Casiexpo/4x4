@@ -1,14 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDly5eTPk_a1c1gtXQO4YI72V9Naqjz40o",
-    authDomain: "x4-catalunya.firebaseapp.com",
-    projectId: "x4-catalunya"
-};
-
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
+const SUPABASE_URL = "https://rvcplafkusuwbcvxdzgz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_U64qz-HfU2mYsv-VpKPmjg_Z9vqg64O";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 function formatDateRange(start, end) {
     if (!start) return '—';
@@ -20,27 +14,28 @@ async function loadEventDetail() {
     const params    = new URLSearchParams(window.location.search);
     const eventId   = params.get('id');
     const container = document.getElementById('event-detail-content');
-
     if (!eventId) return;
 
     try {
-        const docRef  = doc(db, "events", eventId);
-        const docSnap = await getDoc(docRef);
+        const { data, error } = await supabase
+            .from('events')
+            .select('*')
+            .eq('id', eventId)
+            .single();
 
-        if (docSnap.exists()) {
-            const ev          = docSnap.data();
-            const tipoEvento  = ev.tipo_evento || 'trial';
+        if (error) throw error;
 
-            // Compatibilitat amb camps antics
-            const dateStr     = formatDateRange(ev.date_start || ev.date, ev.date_end);
-            const priceStr    = ev.price_public || ev.price || 'GRATIS';
+        if (data) {
+            const ev         = data;
+            const tipoEvento = ev.tipo_evento || 'trial';
+            const dateStr    = formatDateRange(ev.date_start, ev.date_end);
+            const priceStr   = ev.price_public || 'GRATIS';
 
-            // Badges opcionals (food trucks / crawler)
             const extraBadges = `
                 ${ev.food_trucks  ? '<span style="display:inline-flex; align-items:center; gap:6px; background:#92400e; color:#fef3c7; font-family:\'Barlow Condensed\',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; border-radius:6px; padding:5px 12px;">🍔 Food Trucks</span>' : ''}
                 ${ev.zona_crawler ? '<span style="display:inline-flex; align-items:center; gap:6px; background:#1e3a5f; color:#bfdbfe; font-family:\'Barlow Condensed\',sans-serif; font-size:0.8rem; font-weight:700; letter-spacing:0.05em; text-transform:uppercase; border-radius:6px; padding:5px 12px;">🚗 Zona Crawler / RC</span>' : ''}
             `;
-            const hasExtras   = ev.food_trucks || ev.zona_crawler;
+            const hasExtras = ev.food_trucks || ev.zona_crawler;
 
             container.innerHTML = `
                 <div class="premium-wrapper">
@@ -48,13 +43,11 @@ async function loadEventDetail() {
                         <span class="card-badge ${tipoEvento.toLowerCase()}" style="position:absolute; top:20px; left:20px; z-index:10;">
                             ${tipoEvento.toUpperCase()}
                         </span>
-                        <img src="${ev.imageUrl}" alt="Cartell ${ev.title}">
+                        <img src="${ev.image_url}" alt="Cartell ${ev.title}">
                     </div>
                     <div class="premium-info">
                         <h1 class="premium-title orange-text">${ev.title}</h1>
-
                         ${hasExtras ? `<div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px;">${extraBadges}</div>` : ''}
-
                         <div class="info-boxes">
                             <div class="info-box">
                                 <span class="icon">📅</span>
@@ -68,8 +61,12 @@ async function loadEventDetail() {
                                 <span class="icon">💶</span>
                                 <div><span class="label">Entrada pública</span><span class="value">${priceStr}</span></div>
                             </div>
+                            ${ev.price_participants ? `
+                            <div class="info-box">
+                                <span class="icon">🏁</span>
+                                <div><span class="label">Preu participants</span><span class="value">${ev.price_participants}</span></div>
+                            </div>` : ''}
                         </div>
-
                         <div class="detail-actions">
                             <a href="${ev.link}" target="_blank" class="btn btn-primary btn-premium">
                                 Informació i Inscripció

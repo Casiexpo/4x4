@@ -1,20 +1,8 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, doc, deleteDoc, updateDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyDly5eTPk_a1c1gtXQO4YI72V9Naqjz40o",
-    authDomain: "x4-catalunya.firebaseapp.com",
-    projectId: "x4-catalunya",
-    storageBucket: "x4-catalunya.firebasestorage.app",
-    messagingSenderId: "462617699135",
-    appId: "1:462617699135:web:51d11630a82ad03cf0698a",
-    measurementId: "G-ZXK7YPPXP5"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+const SUPABASE_URL = "https://rvcplafkusuwbcvxdzgz.supabase.co";
+const SUPABASE_KEY = "sb_publishable_U64qz-HfU2mYsv-VpKPmjg_Z9vqg64O";
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // =========================================================
 // SISTEMA DE NOTIFICACIONES CUSTOM (TOASTS Y MODAL)
@@ -26,7 +14,6 @@ style.textContent = `
     .custom-toast { background: var(--bg-card, #1a1a1a); color: #fff; padding: 16px 24px; border-radius: 8px; border-left: 4px solid var(--orange, #E8650A); box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-family: 'Barlow', sans-serif; font-size: 1.1rem; display: flex; align-items: center; gap: 12px; transform: translateX(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .custom-toast.show { transform: translateX(0); }
     .custom-toast.error { border-left-color: #ff3333; }
-    
     #custom-confirm-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; backdrop-filter: blur(4px); }
     #custom-confirm-modal.show { opacity: 1; pointer-events: auto; }
     .confirm-box { background: var(--bg-card, #1a1a1a); padding: 40px; border-radius: 16px; border: 1px solid var(--border, #2a2a2a); text-align: center; max-width: 400px; width: 90%; transform: translateY(-30px); transition: transform 0.3s ease; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
@@ -45,10 +32,7 @@ function showToast(msg, type = 'success') {
     toast.innerHTML = `<span style="font-size:1.4rem;">${type === 'error' ? '❌' : '✅'}</span> <span>${msg}</span>`;
     toastContainer.appendChild(toast);
     setTimeout(() => toast.classList.add('show'), 10);
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => toast.remove(), 400);
-    }, 3500);
+    setTimeout(() => { toast.classList.remove('show'); setTimeout(() => toast.remove(), 400); }, 3500);
 }
 
 const confirmModal = document.createElement('div');
@@ -70,111 +54,135 @@ function customConfirm(msg) {
         document.getElementById('confirm-msg').innerHTML = msg;
         confirmModal.classList.add('show');
         document.getElementById('confirm-cancel').onclick = () => { confirmModal.classList.remove('show'); resolve(false); };
-        document.getElementById('confirm-ok').onclick = () => { confirmModal.classList.remove('show'); resolve(true); };
+        document.getElementById('confirm-ok').onclick    = () => { confirmModal.classList.remove('show'); resolve(true); };
     });
 }
 
 // =========================================================
-// LÒGICA PRINCIPAL (LOGIN, CREAR, EDITAR, ELIMINAR)
+// LOGIN / LOGOUT
 // =========================================================
 
 const loginSec = document.getElementById('login-section');
 const adminSec = document.getElementById('admin-panel');
 const listSec  = document.getElementById('admin-list-section');
 
-onAuthStateChanged(auth, (user) => {
-    if (user) {
-        loginSec.style.display = 'none';
-        adminSec.style.display = 'block';
-        listSec.style.display  = 'block';
-        loadAdminEvents();
-    } else {
-        loginSec.style.display = 'block';
-        adminSec.style.display = 'none';
-        listSec.style.display  = 'none';
+// Comprovar sessió guardada
+supabase.auth.getSession().then(({ data: { session } }) => {
+    if (session) showAdmin();
+    else showLogin();
+});
+
+supabase.auth.onAuthStateChange((_event, session) => {
+    if (session) showAdmin();
+    else showLogin();
+});
+
+function showAdmin() {
+    loginSec.style.display = 'none';
+    adminSec.style.display = 'block';
+    listSec.style.display  = 'block';
+    loadAdminEvents();
+}
+function showLogin() {
+    loginSec.style.display = 'block';
+    adminSec.style.display = 'none';
+    listSec.style.display  = 'none';
+}
+
+document.getElementById('login-btn').addEventListener('click', async () => {
+    const email = document.getElementById('email').value;
+    const pass  = document.getElementById('password').value;
+    const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
+    if (error) {
+        document.getElementById('login-error').style.display = 'block';
+        showToast("Credencials incorrectes", "error");
     }
 });
 
-document.getElementById('login-btn').addEventListener('click', () => {
-    const email = document.getElementById('email').value;
-    const pass  = document.getElementById('password').value;
-    signInWithEmailAndPassword(auth, email, pass).catch(() => {
-        document.getElementById('login-error').style.display = 'block';
-        showToast("Credencials incorrectes", "error");
-    });
-});
+document.getElementById('logout-btn').addEventListener('click', () => supabase.auth.signOut());
 
-document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+// =========================================================
+// PUJAR IMATGE A STORAGE
+// =========================================================
 
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload  = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-});
+async function uploadImage(file) {
+    const ext      = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${ext}`;
+    const { error } = await supabase.storage.from('events').upload(fileName, file, { upsert: false });
+    if (error) throw error;
+    const { data } = supabase.storage.from('events').getPublicUrl(fileName);
+    return data.publicUrl;
+}
 
-// ---- CREAR ESDEVENIMENT ----
+// =========================================================
+// CREAR ESDEVENIMENT
+// =========================================================
+
 document.getElementById('create-event-btn').addEventListener('click', async (e) => {
     const btn  = e.target;
     const file = document.getElementById('ev-image').files[0];
 
-    if (!file) { showToast("Si us plau, puja el cartell de l'esdeveniment", "error"); return; }
+    if (!file)  { showToast("Si us plau, puja el cartell de l'esdeveniment", "error"); return; }
     if (!document.getElementById('ev-title').value) { showToast("Has d'escriure un títol", "error"); return; }
 
     btn.disabled    = true;
-    btn.textContent = "Guardant dades...";
+    btn.textContent = "Pujant imatge...";
 
     try {
-        const base64Img = await toBase64(file);
+        const imageUrl = await uploadImage(file);
+        btn.textContent = "Guardant dades...";
         const priceVal  = document.getElementById('ev-price').value.trim();
 
-        await addDoc(collection(db, "events"), {
-            title:        document.getElementById('ev-title').value,
-            date_start:   document.getElementById('ev-date-start').value,
-            date_end:     document.getElementById('ev-date-end').value,
-            location:     document.getElementById('ev-location').value,
-            price_public:        priceVal || 'GRATIS',
-            price_participants:  document.getElementById('ev-price-participants').value.trim() || '',
-            link:                document.getElementById('ev-link').value,
-            imageUrl:     base64Img,
-            tipo_evento:  document.getElementById('tipo_evento').value,
-            food_trucks:  document.getElementById('ev-food-trucks').checked,
-            zona_crawler: document.getElementById('ev-crawler').checked,
-            timestamp:    new Date().getTime()
-        });
+        const { error } = await supabase.from('events').insert([{
+            title:              document.getElementById('ev-title').value,
+            date_start:         document.getElementById('ev-date-start').value,
+            date_end:           document.getElementById('ev-date-end').value,
+            location:           document.getElementById('ev-location').value,
+            price_public:       priceVal || 'GRATIS',
+            price_participants: document.getElementById('ev-price-participants').value.trim() || null,
+            link:               document.getElementById('ev-link').value,
+            image_url:          imageUrl,
+            tipo_evento:        document.getElementById('tipo_evento').value,
+            food_trucks:        document.getElementById('ev-food-trucks').checked,
+            zona_crawler:       document.getElementById('ev-crawler').checked,
+        }]);
+
+        if (error) throw error;
 
         showToast("Esdeveniment publicat amb èxit!");
         setTimeout(() => window.location.reload(), 2000);
     } catch (err) {
         console.error(err);
-        showToast("Error de connexió al guardar", "error");
+        showToast("Error al guardar: " + err.message, "error");
         btn.disabled    = false;
         btn.textContent = "Publicar Esdeveniment";
     }
 });
 
-// ---- CARREGAR LLISTA D'ADMIN ----
+// =========================================================
+// CARREGAR LLISTA ADMIN
+// =========================================================
+
 async function loadAdminEvents() {
     const container = document.getElementById('events-list-admin');
     try {
-        const q    = query(collection(db, "events"), orderBy("date_start", "asc"));
-        const snap = await getDocs(q);
+        const { data, error } = await supabase
+            .from('events')
+            .select('*')
+            .order('date_start', { ascending: true });
 
-        if (snap.empty) {
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
             container.innerHTML = "<p style='color:#888; text-align:center; padding:20px;'>Encara no hi ha esdeveniments.</p>";
             return;
         }
 
         container.innerHTML = '';
-        snap.forEach(docSnap => {
-            const ev   = docSnap.data();
-            const tipo = ev.tipo_evento || 'trial';
-            // Compatibilitat amb events antics que usaven "date"
-            const dateStart = ev.date_start || ev.date || '';
-            const dateEnd   = ev.date_end   || '';
-            const dateStr   = dateEnd && dateEnd !== dateStart
-                ? `${dateStart} → ${dateEnd}`
-                : dateStart;
+        data.forEach(ev => {
+            const tipo    = ev.tipo_evento || 'trial';
+            const dateStr = ev.date_end && ev.date_end !== ev.date_start
+                ? `${ev.date_start} → ${ev.date_end}` : ev.date_start;
 
             const div = document.createElement('div');
             div.style.cssText = "display:flex; justify-content:space-between; align-items:center; padding:15px; background:var(--bg, #0d0d0d); margin-bottom:10px; border-radius:8px; border:1px solid var(--border, #2a2a2a); gap:10px;";
@@ -189,8 +197,8 @@ async function loadAdminEvents() {
                     </span>
                 </div>
                 <div style="display:flex; gap:8px; flex-shrink:0;">
-                    <button class="btn edit-btn" data-id="${docSnap.id}" style="background:#2563eb; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">✏️ Editar</button>
-                    <button class="btn delete-btn" data-id="${docSnap.id}" data-title="${ev.title}" style="background:#ff3333; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">Eliminar</button>
+                    <button class="btn edit-btn"   data-id="${ev.id}" style="background:#2563eb; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">✏️ Editar</button>
+                    <button class="btn delete-btn" data-id="${ev.id}" data-title="${ev.title}" style="background:#ff3333; color:white; padding:8px 14px; font-size:0.9rem; border-radius:6px;">Eliminar</button>
                 </div>
             `;
             container.appendChild(div);
@@ -198,9 +206,8 @@ async function loadAdminEvents() {
 
         document.querySelectorAll('.edit-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const clickedBtn = e.target.closest('.edit-btn');
-                const id         = clickedBtn.getAttribute('data-id');
-                const eventData  = snap.docs.find(d => d.id === id)?.data();
+                const id      = e.target.closest('.edit-btn').getAttribute('data-id');
+                const eventData = data.find(ev => String(ev.id) === String(id));
                 if (eventData) openEditModal(id, eventData);
             });
         });
@@ -215,35 +222,35 @@ async function loadAdminEvents() {
     }
 }
 
-// ---- MODAL D'EDICIÓ ----
-const editModal    = document.getElementById('edit-modal');
-let currentEditId  = null;
+// =========================================================
+// MODAL EDICIÓ
+// =========================================================
+
+const editModal   = document.getElementById('edit-modal');
+let currentEditId = null;
 
 function openEditModal(id, ev) {
     currentEditId = id;
-
-    document.getElementById('edit-title').value      = ev.title       || '';
-    document.getElementById('edit-date-start').value = ev.date_start  || ev.date || '';
-    document.getElementById('edit-date-end').value   = ev.date_end    || '';
-    document.getElementById('edit-location').value   = ev.location    || '';
-    document.getElementById('edit-link').value       = ev.link        || '';
+    document.getElementById('edit-title').value      = ev.title      || '';
+    document.getElementById('edit-date-start').value = ev.date_start || '';
+    document.getElementById('edit-date-end').value   = ev.date_end   || '';
+    document.getElementById('edit-location').value   = ev.location   || '';
+    document.getElementById('edit-link').value       = ev.link       || '';
     document.getElementById('edit-tipo').value       = ev.tipo_evento || 'trial';
     document.getElementById('edit-food-trucks').checked = !!ev.food_trucks;
     document.getElementById('edit-crawler').checked     = !!ev.zona_crawler;
 
-    // Preu: si és GRATIS mostra camp buit perquè el placeholder ja ho indica
-    const currentPrice = ev.price_public || ev.price || '';
+    const currentPrice = ev.price_public || '';
     document.getElementById('edit-price').value = currentPrice === 'GRATIS' ? '' : currentPrice;
     document.getElementById('edit-price-participants').value = ev.price_participants || '';
 
     const preview = document.getElementById('edit-img-preview');
-    if (ev.imageUrl) {
-        preview.src            = ev.imageUrl;
-        preview.style.display  = 'block';
+    if (ev.image_url) {
+        preview.src           = ev.image_url;
+        preview.style.display = 'block';
     } else {
-        preview.style.display  = 'none';
+        preview.style.display = 'none';
     }
-
     document.getElementById('edit-image').value = '';
     editModal.classList.add('show');
 }
@@ -254,15 +261,11 @@ document.getElementById('edit-cancel-btn').addEventListener('click', () => {
 });
 
 editModal.addEventListener('click', (e) => {
-    if (e.target === editModal) {
-        editModal.classList.remove('show');
-        currentEditId = null;
-    }
+    if (e.target === editModal) { editModal.classList.remove('show'); currentEditId = null; }
 });
 
 document.getElementById('edit-save-btn').addEventListener('click', async () => {
     if (!currentEditId) return;
-
     const saveBtn = document.getElementById('edit-save-btn');
     saveBtn.disabled    = true;
     saveBtn.textContent = "Guardant...";
@@ -272,23 +275,25 @@ document.getElementById('edit-save-btn').addEventListener('click', async () => {
         const priceVal = document.getElementById('edit-price').value.trim();
 
         const updatedData = {
-            title:        document.getElementById('edit-title').value,
-            date_start:   document.getElementById('edit-date-start').value,
-            date_end:     document.getElementById('edit-date-end').value,
-            location:     document.getElementById('edit-location').value,
-            price_public:        priceVal || 'GRATIS',
-            price_participants:  document.getElementById('edit-price-participants').value.trim() || '',
-            link:                document.getElementById('edit-link').value,
-            tipo_evento:  document.getElementById('edit-tipo').value,
-            food_trucks:  document.getElementById('edit-food-trucks').checked,
-            zona_crawler: document.getElementById('edit-crawler').checked,
+            title:              document.getElementById('edit-title').value,
+            date_start:         document.getElementById('edit-date-start').value,
+            date_end:           document.getElementById('edit-date-end').value,
+            location:           document.getElementById('edit-location').value,
+            price_public:       priceVal || 'GRATIS',
+            price_participants: document.getElementById('edit-price-participants').value.trim() || null,
+            link:               document.getElementById('edit-link').value,
+            tipo_evento:        document.getElementById('edit-tipo').value,
+            food_trucks:        document.getElementById('edit-food-trucks').checked,
+            zona_crawler:       document.getElementById('edit-crawler').checked,
         };
 
         if (newFile) {
-            updatedData.imageUrl = await toBase64(newFile);
+            saveBtn.textContent = "Pujant imatge...";
+            updatedData.image_url = await uploadImage(newFile);
         }
 
-        await updateDoc(doc(db, "events", currentEditId), updatedData);
+        const { error } = await supabase.from('events').update(updatedData).eq('id', currentEditId);
+        if (error) throw error;
 
         showToast("Canvis guardats correctament!");
         editModal.classList.remove('show');
@@ -296,16 +301,19 @@ document.getElementById('edit-save-btn').addEventListener('click', async () => {
         loadAdminEvents();
     } catch (err) {
         console.error(err);
-        showToast("Error al guardar els canvis", "error");
+        showToast("Error al guardar els canvis: " + err.message, "error");
     } finally {
         saveBtn.disabled    = false;
         saveBtn.textContent = "💾 Guardar canvis";
     }
 });
 
-// ---- ELIMINAR ----
+// =========================================================
+// ELIMINAR
+// =========================================================
+
 async function deleteEvent(e) {
-    const btn = e.target.closest('.delete-btn');
+    const btn     = e.target.closest('.delete-btn');
     if (!btn) return;
     const eventId = btn.getAttribute('data-id');
     const title   = btn.getAttribute('data-title');
@@ -320,9 +328,9 @@ async function deleteEvent(e) {
         btn.textContent   = "Esborrant...";
         btn.disabled      = true;
         btn.style.opacity = '0.5';
-
         try {
-            await deleteDoc(doc(db, "events", eventId));
+            const { error } = await supabase.from('events').delete().eq('id', eventId);
+            if (error) throw error;
             showToast("Esdeveniment eliminat correctament!");
             loadAdminEvents();
         } catch (error) {
