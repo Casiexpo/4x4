@@ -256,7 +256,7 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   position: absolute;
   inset: 0;
   /* AQUI ESTA TU FOTO: Cambia 'ruta-de-tu-foto.jpg' por el nombre de tu imagen */
-  background: url('/4x4/assets/img/hero-4x4.png') center/cover no-repeat;
+  background: url('/assets/img/hero-4x4.png') center/cover no-repeat;
   opacity: 0.5; /* Ajusta esto si la foto brilla mucho y no deja leer el texto */
   pointer-events: none;
 }

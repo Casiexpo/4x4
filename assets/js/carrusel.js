@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slide.classList.add('carrusel-slide');
         
         const img = document.createElement('img');
-        img.src = `/4x4/assets/img/carrusel/${foto}`;
+        img.src = `/assets/img/carrusel/${foto}`;
         img.alt = `Imatge comunitat 4x4 ${index + 1}`;
         // Para evitar que imágenes que falten rompan el diseño
         img.onerror = () => { img.style.display = 'none'; }; 
