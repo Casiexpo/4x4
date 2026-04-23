@@ -20,7 +20,7 @@ Aquesta web és un directori centralitzat que recull tots els esdeveniments 4x4 
 ## 🛠️ Tecnologies utilitzades
 
 * **Frontend:** HTML5, CSS3 (Custom Variables & Grid), JavaScript (ES6 Modules).
-* **Backend:** [Firebase](https://firebase.google.com/) (Firestore per a la base de dades).
+* **Backend:** [Supabase](https://supabase.com/) (Supabase per a la base de dades).
 * **Fonts:** Google Fonts (Barlow).
 * **Icons:** Lucide Icons / Font Awesome / Custom SVGs.
 
@@ -35,6 +35,8 @@ Aquesta web és un directori centralitzat que recull tots els esdeveniments 4x4 
 │   ├── js/
 │   │   ├── Main.js         # Lògica de càrrega de la graella principal
 │   │   ├── admin.js        # Lògica del panell d'administració
+│   │   ├── carrusel.js     # Lògica del carrusel d'imatges
+│   │   ├── i18n.js         # Lògica de l'apartat de selecció d'idiomaa
 │   │   └── event-detail.js # Generació dinàmica de fitxes d'esdeveniment
 │   └── img/                # Logos i recursos visuals
 │       └── carrusel/       # Fotos del carrusel en la zona "Sobre nosaltres"
