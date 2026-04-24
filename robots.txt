@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://trials4x4.cat/assets/xml/sitemap.xml
