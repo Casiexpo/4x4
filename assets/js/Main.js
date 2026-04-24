@@ -94,6 +94,7 @@ function setHomeStructuredData(events = []) {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: "4x4 Catalunya",
+    alternateName: "Trials 4x4 Catalunya",
     url: pageUrl,
     inLanguage: "ca",
     description:
@@ -107,6 +108,27 @@ function setHomeStructuredData(events = []) {
     url: pageUrl,
     logo: absoluteUrl("/assets/img/logo-4x4-catalunya-modified.png"),
     email: "mailto:trials4x4catalunya@gmail.com",
+    areaServed: {
+      "@type": "AdministrativeArea",
+      name: "Catalunya",
+      containedInPlace: {
+        "@type": "Country",
+        name: "Espanya",
+      },
+    },
+  });
+
+  setJsonLd("breadcrumb-schema", {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inici",
+        item: pageUrl,
+      },
+    ],
   });
 
   setJsonLd("faq-schema", {
@@ -140,6 +162,33 @@ function setHomeStructuredData(events = []) {
             "Si organitzes un trial 4x4 o una activitat off-road a Catalunya, pots contactar amb 4x4 Catalunya per centralitzar la informació i fer-la arribar a l'afició.",
         },
       },
+      {
+        "@type": "Question",
+        name: "Quan es fa el pròxim trial 4x4 a Catalunya?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text:
+            "El calendari de la portada mostra els propers trials 4x4 ordenats per data. Les dates es van actualitzant a mesura que els organitzadors publiquen les seves proves a Barcelona, Girona, Lleida o Tarragona.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Com puc participar en un trial 4x4 a Catalunya?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text:
+            "Cada fitxa d'esdeveniment inclou l'enllaç oficial de l'organitzador on pots trobar els requisits d'inscripció, el reglament i la documentació necessària per participar-hi com a pilot o copilot.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Què és un trial 4x4 i on es fan a Catalunya?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text:
+            "Un trial 4x4 és una competició off-road on els vehicles tot terreny han de superar zones de dificultat en terrenys naturals. A Catalunya se'n celebren a diverses comarques, des del Pirineu fins a les terres de l'Ebre, passant per la Catalunya Central.",
+        },
+      },
     ],
   });
 
@@ -148,6 +197,7 @@ function setHomeStructuredData(events = []) {
     position: index + 1,
     url: `${BASE_URL}/evento.html?id=${event.id}`,
     name: event.title,
+    image: absoluteUrl(event.image_url),
   }));
 
   if (listItems.length) {
@@ -155,6 +205,8 @@ function setHomeStructuredData(events = []) {
       "@context": "https://schema.org",
       "@type": "ItemList",
       name: "Propers trials 4x4 a Catalunya",
+      description: "Calendari actualitzat de trials 4x4 i esdeveniments off-road a Catalunya.",
+      numberOfItems: listItems.length,
       itemListElement: listItems,
     });
   }

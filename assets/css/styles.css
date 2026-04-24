@@ -816,6 +816,46 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 }
 
 /* ============================================================
+   BREADCRUMB
+   ============================================================ */
+.breadcrumb {
+  margin-bottom: 24px;
+}
+.breadcrumb-list {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  list-style: none;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.breadcrumb-list li {
+  display: flex;
+  align-items: center;
+}
+.breadcrumb-list li::after {
+  content: '›';
+  margin: 0 10px;
+  color: var(--text-dim);
+  font-size: 1rem;
+}
+.breadcrumb-list li:last-child::after {
+  display: none;
+}
+.breadcrumb-list a {
+  color: var(--text-muted);
+  transition: color var(--transition);
+}
+.breadcrumb-list a:hover {
+  color: var(--orange);
+}
+.breadcrumb-list li[aria-current="page"] {
+  color: var(--orange);
+  font-weight: 600;
+}
+
+/* ============================================================
    EVENT PAGE
    ============================================================ */
 .event-page {

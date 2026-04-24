@@ -97,6 +97,31 @@ function setEventStructuredData(event) {
     type: "article",
   });
 
+  setJsonLd("breadcrumb-schema", {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Inici",
+        item: `${BASE_URL}/`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Esdeveniments",
+        item: `${BASE_URL}/#events`,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: event.title,
+        item: eventUrl,
+      },
+    ],
+  });
+
   setJsonLd("event-schema", {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -133,6 +158,12 @@ function setEventStructuredData(event) {
         }
       : undefined,
   });
+
+  // Update breadcrumb text
+  const breadcrumbCurrent = document.getElementById("breadcrumb-current");
+  if (breadcrumbCurrent) {
+    breadcrumbCurrent.textContent = event.title;
+  }
 }
 
 setSeoMeta({
