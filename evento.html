@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Consulta la informació completa del trial 4x4 a Catalunya: data, ubicació, preus i enllaç oficial.">
-  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="robots" content="noindex, follow">
   <meta name="geo.region" content="ES-CT" />
   <meta name="geo.placename" content="Catalunya" />
   <meta name="content-language" content="ca" />
@@ -21,11 +21,6 @@
   <meta name="twitter:image" content="https://trials4x4.cat/assets/img/hero-4x4.png">
   <title>Detalls de l'esdeveniment | 4x4 Catalunya</title>
   <link rel="canonical" href="https://trials4x4.cat/evento.html">
-  <link rel="alternate" hreflang="ca" href="https://trials4x4.cat/evento.html" />
-  <link rel="alternate" hreflang="es" href="https://trials4x4.cat/evento.html?lang=es" />
-  <link rel="alternate" hreflang="en" href="https://trials4x4.cat/evento.html?lang=en" />
-  <link rel="alternate" hreflang="fr" href="https://trials4x4.cat/evento.html?lang=fr" />
-  <link rel="alternate" hreflang="x-default" href="https://trials4x4.cat/evento.html" />
   <link rel="icon" type="image/png" href="assets/img/logo-4x4-catalunya-modified.png" />
   <link rel="apple-touch-icon" href="assets/img/logo-4x4-catalunya-modified.png" />
   <link rel="preconnect" href="https://rvcplafkusuwbcvxdzgz.supabase.co" />
@@ -161,11 +156,17 @@
           <p>Web dedicada a trials i events 4x4 a Catalunya.</p>
         </div>
         <nav class="footer-nav">
-          <h3 class="footer-nav-title">Navegació</h3>
+          <h3 class="footer-nav-title" data-i18n="footerNav">Navegació</h3>
           <ul>
-            <li><a href="index.html">Inici</a></li>
-            <li><a href="index.html#events">Trials</a></li>
-            <li><a href="index.html#col-laborar">Col·laborar</a></li>
+            <li><a href="./" data-i18n="footerHome">Inici</a></li>
+            <li><a href="./#events" data-i18n="footerTrials">Trials</a></li>
+            <li><a href="./#col-laborar" data-i18n="footerCollab">Col·laborar</a></li>
+          </ul>
+        </nav>
+        <nav class="footer-nav">
+          <h3 class="footer-nav-title" data-i18n="footerLegal">Legal</h3>
+          <ul>
+            <li><a href="avis-legal.html" data-i18n="footerAvisLegal">Avís Legal i Privacitat</a></li>
           </ul>
         </nav>
       </div>
@@ -175,6 +176,21 @@
     </div>
   </footer>
 
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner" role="dialog" aria-label="Informació sobre cookies" style="display:none;">
+    <div class="cookie-banner-inner">
+      <div class="cookie-banner-text">
+        <span class="cookie-icon">🍪</span>
+        <p data-i18n="cookieText">Aquesta web <strong>no utilitza cookies</strong>. Només fem servir emmagatzematge local per recordar el teu idioma preferit.</p>
+      </div>
+      <div class="cookie-banner-actions">
+        <button id="cookie-accept" class="btn btn-cookie-accept" data-i18n="cookieAccept">Acceptar</button>
+        <button id="cookie-reject" class="btn btn-cookie-reject" data-i18n="cookieReject">Rebutjar</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module" src="assets/js/event-detail.js"></script>
+  <script src="assets/js/cookie-banner.js"></script>
 </body>
 </html>

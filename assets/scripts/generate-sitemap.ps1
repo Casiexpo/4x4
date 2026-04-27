@@ -16,6 +16,8 @@ $events = Invoke-RestMethod `
   -Method Get
 
 $entries = @()
+
+# Homepage
 $entries += @"
   <url>
     <loc>$baseUrl/</loc>
@@ -25,6 +27,17 @@ $entries += @"
   </url>
 "@
 
+# Legal page
+$entries += @"
+  <url>
+    <loc>$baseUrl/avis-legal.html</loc>
+    <lastmod>$today</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+"@
+
+# Individual event pages
 foreach ($event in $events) {
   $eventUrl = "$baseUrl/evento.html?id=$([System.Uri]::EscapeDataString($event.id))"
   $entries += @"
@@ -44,7 +57,9 @@ $($entries -join "`n")
 </urlset>
 "@
 
-$targetPath = Join-Path $PSScriptRoot "..\\xml\\sitemap.xml"
+# Output to the project root (same level as index.html)
+$targetPath = Join-Path $PSScriptRoot "..\..\sitemap.xml"
+$targetPath = [System.IO.Path]::GetFullPath($targetPath)
 Set-Content -LiteralPath $targetPath -Value $sitemap -Encoding UTF8
 
-Write-Output "Sitemap generado con $($entries.Count) URL(s) en $targetPath"
+Write-Output "Sitemap generated with $($entries.Count) URL(s) at $targetPath"

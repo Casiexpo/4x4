@@ -59,6 +59,13 @@ export const TRANSLATIONS = {
     free:           'GRATIS',
     eventNotFound:  "L'esdeveniment no existeix o ha estat esborrat.",
     errorLoad:      'Error al carregar les dades.',
+    // COOKIE BANNER
+    cookieText:     'Aquesta web <strong>no utilitza cookies</strong>. Només fem servir emmagatzematge local per recordar el teu idioma preferit.',
+    cookieAccept:   'Acceptar',
+    cookieReject:   'Rebutjar',
+    // FOOTER LEGAL
+    footerLegal:    'Legal',
+    footerAvisLegal:'Avís Legal i Privacitat',
   },
   es: {
     langCode: 'es',
@@ -107,6 +114,11 @@ export const TRANSLATIONS = {
     free:           'GRATIS',
     eventNotFound:  'El evento no existe o ha sido eliminado.',
     errorLoad:      'Error al cargar los datos.',
+    cookieText:     'Esta web <strong>no utiliza cookies</strong>. Solo usamos almacenamiento local para recordar tu idioma preferido.',
+    cookieAccept:   'Aceptar',
+    cookieReject:   'Rechazar',
+    footerLegal:    'Legal',
+    footerAvisLegal:'Aviso Legal y Privacidad',
   },
   en: {
     langCode: 'en',
@@ -155,6 +167,11 @@ export const TRANSLATIONS = {
     free:           'FREE',
     eventNotFound:  'The event does not exist or has been deleted.',
     errorLoad:      'Error loading data.',
+    cookieText:     'This website <strong>does not use cookies</strong>. We only use local storage to remember your language preference.',
+    cookieAccept:   'Accept',
+    cookieReject:   'Decline',
+    footerLegal:    'Legal',
+    footerAvisLegal:'Legal Notice & Privacy',
   },
   fr: {
     langCode: 'fr',
@@ -203,6 +220,11 @@ export const TRANSLATIONS = {
     free:           'GRATUIT',
     eventNotFound:  "L'événement n'existe pas ou a été supprimé.",
     errorLoad:      'Erreur lors du chargement des données.',
+    cookieText:     'Ce site web <strong>n\'utilise pas de cookies</strong>. Nous utilisons uniquement le stockage local pour mémoriser votre langue préférée.',
+    cookieAccept:   'Accepter',
+    cookieReject:   'Refuser',
+    footerLegal:    'Légal',
+    footerAvisLegal:'Mentions légales et confidentialité',
   }
 };
 
